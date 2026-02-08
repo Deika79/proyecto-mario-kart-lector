@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padre - Mario Kart Lector</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h1>Padre - Añadir Minutos</h1>
+
+  <div class="form-container">
+    <form id="registroForm">
+      <label for="alumnoId">Alumno:</label>
+      <select id="alumnoId" required></select>
+
+      <label for="minutos">Minutos leídos hoy:</label>
+      <input type="number" id="minutos" min="1" required>
+
+      <button type="submit">Registrar Minutos</button>
+    </form>
+  </div>
+
+  <div id="mensaje"></div>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/padre.js"></script>
+</body>
+</html>
