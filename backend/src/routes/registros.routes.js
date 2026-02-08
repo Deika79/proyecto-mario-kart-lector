@@ -1,35 +1,36 @@
 import express from 'express';
-import RegistroMinutos from '../models/RegistroMinutos.js';
 import Alumno from '../models/Alumno.js';
+import RegistroMinutos from '../models/RegistroMinutos.js';
 
 const router = express.Router();
 
 /**
- * Registrar minutos de lectura
+ * POST /api/registros
+ * { alumnoId, minutos }
+ * Registra minutos para un alumno y actualiza minutosTotales
  */
 router.post('/', async (req, res) => {
   try {
     const { alumnoId, minutos } = req.body;
-
-    if (!alumnoId || !minutos) {
-      return res.status(400).json({ error: 'Datos incompletos' });
-    }
+    if (!alumnoId || !minutos) return res.status(400).json({ error: 'Faltan datos' });
 
     // Crear registro
-    const registro = new RegistroMinutos({
+    const registro = await RegistroMinutos.create({
       alumnoId,
       minutos,
+      fecha: new Date()
     });
 
-    await registro.save();
+    // Actualizar total de minutos
+    const alumno = await Alumno.findById(alumnoId);
+    if (!alumno) return res.status(404).json({ error: 'Alumno no encontrado' });
 
-    // Actualizar minutos totales del alumno
-    await Alumno.findByIdAndUpdate(alumnoId, {
-      $inc: { minutosTotales: minutos },
-    });
+    alumno.minutosTotales += minutos;
+    await alumno.save();
 
-    res.status(201).json(registro);
+    res.json({ ok: true, alumno });
   } catch (error) {
+    console.error('Error registrando minutos:', error);
     res.status(500).json({ error: error.message });
   }
 });
