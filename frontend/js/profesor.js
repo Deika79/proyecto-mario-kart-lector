@@ -1,5 +1,7 @@
+// profesor.js
 import { pintarCoches } from './circuito.js';
 
-// refrescar cada 5 segundos
-setInterval(pintarCoches, 5000);
-pintarCoches();
+// Espera a que todo el DOM esté cargado
+document.addEventListener('DOMContentLoaded', () => {
+  pintarCoches();
+});
