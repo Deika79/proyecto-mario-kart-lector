@@ -5,7 +5,8 @@ export async function obtenerAlumnos() {
     const res = await fetch(`${API_URL}/alumnos`);
     return await res.json();
   } catch (error) {
-    console.error("Error obteniendo alumnos:", error);
+    console.error('Error obteniendo alumnos:', error);
+    return [];
   }
 }
 
@@ -15,19 +16,23 @@ export async function obtenerPosiciones() {
     return await res.json();
   } catch (error) {
     console.error("Error obteniendo posiciones:", error);
+    return [];
   }
 }
 
-// ✅ Añade la función que estaba faltando
 export async function registrarMinutos(alumnoId, minutos) {
   try {
     const res = await fetch(`${API_URL}/registros`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ alumnoId, minutos })
     });
-    return await res.json();
+
+    if (!res.ok) throw new Error('Error registrando minutos');
+
+    return await res.json(); // devuelve { registro, alumno }
   } catch (error) {
-    console.error("Error registrando minutos:", error);
+    console.error('Error registrando minutos:', error);
+    return null;
   }
 }

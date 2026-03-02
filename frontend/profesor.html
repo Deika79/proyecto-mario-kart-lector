@@ -7,15 +7,32 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <h1>Profesor - Circuito</h1>
 
-  <!-- Contenedor del circuito -->
-  <div id="circuito-container">
-    <img src="assets/circuitos/circuito1.png" alt="Circuito" id="circuito">
-    <div id="coches-container"></div>
-  </div>
+  <!-- Banner superior -->
+  <header class="banner">
+    <img src="assets/profesor/banner.png" alt="Mario Kart Lector">
+  </header>
 
-  <!-- Scripts como módulos ES -->
+  <!-- Contenido principal -->
+  <main class="main-container">
+
+    <!-- Panel del circuito -->
+    <section class="panel panel-circuito">
+
+      <div class="panel-header">
+        <img src="assets/profesor/profe.png" alt="Profesor">
+      </div>
+
+      <div id="circuito-container">
+        <img src="assets/circuitos/circuito1.png" alt="Circuito" id="circuito">
+        <div id="coches-container"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
   <script type="module" src="js/api.js"></script>
   <script type="module" src="js/circuito.js"></script>
   <script type="module" src="js/profesor.js"></script>

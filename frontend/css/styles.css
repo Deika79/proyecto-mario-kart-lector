@@ -1,109 +1,193 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+/* ===== RESET ===== */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.login-container {
-  background: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  width: 300px;
-  text-align: center;
+body {
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff512f, #dd2476);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
 }
 
-.login-container h1 {
-  margin-bottom: 20px;
-}
-
-.login-container input, select, button {
+/* ===== BANNER ===== */
+.banner {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  background: #000;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
 }
 
-button {
-  background: #ff4c4c;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
+.banner img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-button:hover {
-  background: #ff1a1a;
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 30px;
 }
+
+/* ===== PANEL ESTILO VIDEOJUEGO ===== */
+.panel {
+  background: rgba(255,255,255,0.95);
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow:
+    0 15px 35px rgba(0,0,0,0.3),
+    inset 0 0 15px rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  animation: aparecer 0.6s ease-out;
+}
+.panel-header {
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  align-items: center;     /* centra verticalmente si hay altura */
+  margin-bottom: 25px;
+}
+
+.panel-header img {
+  max-height: 100px;       /* ajusta según tu gusto */
+  width: auto;             /* mantiene proporciones */
+  display: block;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== CABECERA DEL PANEL ===== */
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.panel-header img {
+  height: 70px;
+}
+
+.panel-header h2 {
+  font-size: 2rem;
+  color: #ff3c00;
+  text-shadow: 2px 2px 0 #ffd900;
+}
+
+/* ===== CIRCUITO ===== */
 #circuito-container {
   position: relative;
-  width: 800px;  /* ajusta según tu imagen */
-  height: 600px; /* ajusta según tu imagen */
-  margin: 20px auto;
+  width: 100%;
+  max-width: 900px;
+  aspect-ratio: 4 / 3;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
 #circuito {
   width: 100%;
   height: 100%;
+  object-fit: cover;
   display: block;
+}
+
+/* ===== COCHES ===== */
+#coches-container {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
 }
 
 .coche {
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   transform: translate(-50%, -50%);
-  transition: top 0.3s, left 0.3s;
+  transition: all 0.3s ease;
+  z-index: 11;
+  filter: drop-shadow(0 0 5px rgba(0,0,0,0.7));
+}
+
+.coche:hover {
+  transform: translate(-50%, -50%) scale(1.2);
 }
 
 .nombre-coches {
   position: absolute;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
   color: #fff;
-  text-shadow: 0 0 3px #000;
+  text-shadow:
+    0 0 5px #000,
+    0 0 10px #000;
   transform: translateX(-50%);
+  pointer-events: none;
 }
-.form-container {
-  width: 300px;
-  margin: 20px auto;
-  background: #fff;
-  padding: 20px;
+
+/* ===== BOTONES ESTILO ARCADE ===== */
+button {
+  background: linear-gradient(145deg, #ffcc00, #ff6f00);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 5px 0 #cc5200;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 #cc5200;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #cc5200;
+}
+
+/* ===== FORMULARIOS ===== */
+input, select {
+  padding: 10px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.form-container input, select, button {
-  width: 100%;
-  padding: 8px;
+  border: 2px solid #ddd;
   margin: 8px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-#coches-container img {
-  max-width: 40px;
-  max-height: 40px;
-}
-
-#coches-container {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 10; /* asegura que los coches estén encima */
 }
 
-.coche {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  transform: translate(-50%, -50%);
-  transition: top 0.3s, left 0.3s;
-  z-index: 11; /* encima de contenedor */
+input:focus, select:focus {
+  border-color: #ff6f00;
+  outline: none;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .panel {
+    padding: 20px;
+  }
+
+  .panel-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .coche {
+    width: 35px;
+    height: 35px;
+  }
 }
