@@ -109,18 +109,18 @@ body {
 /* ===== COCHES ===== */
 #coches-container {
   position: absolute;
-  inset: 0;
-  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .coche {
   position: absolute;
-  width: 45px;
-  height: 45px;
-  transform: translate(-50%, -50%);
-  transition: all 0.3s ease;
-  z-index: 11;
-  filter: drop-shadow(0 0 5px rgba(0,0,0,0.7));
+  width: 40px;
+  height: 40px;
+  transform-origin: center center;
+  transition: left 0.5s linear, top 0.5s linear, transform 0.5s linear;
 }
 
 .coche:hover {
