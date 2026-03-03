@@ -93,7 +93,6 @@ body {
   position: relative;
   width: 100%;
   max-width: 900px;
-  aspect-ratio: 4 / 3;
   margin: 0 auto;
   border-radius: 20px;
   overflow: hidden;
@@ -102,9 +101,9 @@ body {
 
 #circuito {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;        /* importante */
   display: block;
+  object-fit: contain; /* asegura que no se recorte */
 }
 
 /* ===== COCHES ===== */

@@ -1,54 +1,68 @@
-// circuito.js
-// Lógica para pintar los coches en el circuito
+// js/circuito.js
 
-// Si quieres usar backend después, reemplaza 'alumnos' por obtenerPosiciones()
+import { circuito1 } from "./data/circuito1.js";
+
+const MINUTOS_VUELTA = 1920;
+
 export async function pintarCoches() {
   const contenedor = document.getElementById('coches-container');
-  if (!contenedor) return; // seguridad
+  if (!contenedor) return;
 
-  contenedor.innerHTML = ''; // limpiar contenedor
+  contenedor.innerHTML = '';
 
-  // MOCK de prueba: un alumno
+  // 🔹 MOCK temporal (luego vendrá del backend)
   const alumnos = [
-    { nombre: "Mario", cocheSeleccionado: "coche1", x: 200, y: 150, casilla: 1 }
+    { nombre: "Mario", cocheSeleccionado: "coche1", minutosTotales: 0 },
+    { nombre: "Luigi", cocheSeleccionado: "coche2", minutosTotales: 0 }
   ];
 
-  console.log('ALUMNOS MOCK:', alumnos);
+  const totalCasillas = circuito1.length;
+  const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
 
-  // Agrupar por casilla y aplicar offset vertical
+  // Calcular casilla real
+  alumnos.forEach(alumno => {
+    const progreso = alumno.minutosTotales % MINUTOS_VUELTA;
+    const casilla = Math.floor(progreso / minutosPorCasilla);
+    alumno.casilla = Math.min(casilla, totalCasillas - 1);
+
+    const punto = circuito1[alumno.casilla];
+    alumno.x = punto.x;
+    alumno.y = punto.y;
+  });
+
+  // Agrupar por casilla (offset si coinciden)
   const agrupados = {};
-  alumnos.forEach((p) => {
+  alumnos.forEach(p => {
     if (!agrupados[p.casilla]) agrupados[p.casilla] = [];
     agrupados[p.casilla].push(p);
   });
 
-  Object.values(agrupados).forEach((grupo) => {
+  Object.values(agrupados).forEach(grupo => {
     grupo.forEach((p, index) => {
-      p.y += index * 8; // separa coches en la misma casilla
+      p.y += index * 10;
     });
   });
 
-  // Pintar cada coche
-  alumnos.forEach((alumno) => {
+  // Pintar coches
+  alumnos.forEach(alumno => {
     const img = document.createElement('img');
     img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
     img.classList.add('coche');
     img.alt = alumno.nombre;
 
-    // Forzar tamaño aunque la imagen original sea gigante
     img.width = 40;
     img.height = 40;
 
-    // Posición absoluta en el contenedor
+    img.style.position = "absolute";
     img.style.left = alumno.x + 'px';
     img.style.top = alumno.y + 'px';
 
     contenedor.appendChild(img);
 
-    // Etiqueta con el nombre encima del coche
     const label = document.createElement('div');
     label.textContent = alumno.nombre;
     label.classList.add('nombre-coches');
+    label.style.position = "absolute";
     label.style.left = alumno.x + 'px';
     label.style.top = (alumno.y - 20) + 'px';
 
