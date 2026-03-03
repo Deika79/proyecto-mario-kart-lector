@@ -1,7 +1,7 @@
 // /js/circuito.js
 import { circuito1 } from "./data/circuito1.js";
 
-const MINUTOS_VUELTA = 1920;
+const MINUTOS_VUELTA = 1920; // 32 horas x 60
 const TAMANO_COCHE = 40;
 const OFFSET_Y = 10;
 
@@ -12,45 +12,56 @@ export async function pintarCoches(alumnosBackend) {
 
   contenedor.innerHTML = '';
 
-  const alumnos = alumnosBackend || [
-    { nombre: "Mario", cocheSeleccionado: "coche1", minutosTotales: 0 },
-    { nombre: "Luigi", cocheSeleccionado: "coche2", minutosTotales: 380 }
-  ];
+  // 🔥 Ahora SOLO usamos lo que venga del backend
+  const alumnos = alumnosBackend || [];
+
+  if (!alumnos.length) {
+    console.warn("No hay alumnos para pintar.");
+    return;
+  }
 
   const totalCasillas = circuito1.length;
   const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
 
   alumnos.forEach(alumno => {
 
+    // Seguridad por si algún campo viene mal
+    if (!alumno.minutosTotales) alumno.minutosTotales = 0;
+
     const progreso = alumno.minutosTotales % MINUTOS_VUELTA;
     const casilla = Math.floor(progreso / minutosPorCasilla);
     alumno.casilla = Math.min(casilla, totalCasillas - 1);
 
-const puntoActual = circuito1[alumno.casilla];
-const puntoAnterior = circuito1[
-  (alumno.casilla - 1 + totalCasillas) % totalCasillas
-];
-const puntoSiguiente = circuito1[
-  (alumno.casilla + 1) % totalCasillas
-];
+    // 🔥 ASIGNAMOS POSICIÓN (esto faltaba antes)
+    const puntoActual = circuito1[alumno.casilla];
+    alumno.x = puntoActual.x;
+    alumno.y = puntoActual.y;
 
-// Dirección suavizada usando anterior y siguiente
-const dx = puntoSiguiente.x - puntoAnterior.x;
-const dy = puntoSiguiente.y - puntoAnterior.y;
+    // Puntos anterior y siguiente para giro suave
+    const puntoAnterior = circuito1[
+      (alumno.casilla - 1 + totalCasillas) % totalCasillas
+    ];
 
-const anguloRad = Math.atan2(dy, dx);
-let anguloDeg = anguloRad * (180 / Math.PI);
+    const puntoSiguiente = circuito1[
+      (alumno.casilla + 1) % totalCasillas
+    ];
 
-// Ajuste si el coche mira hacia arriba
-anguloDeg -= 90;
+    // Dirección suavizada
+    const dx = puntoSiguiente.x - puntoAnterior.x;
+    const dy = puntoSiguiente.y - puntoAnterior.y;
 
-alumno.angulo = anguloDeg;
+    const anguloRad = Math.atan2(dy, dx);
+    let anguloDeg = anguloRad * (180 / Math.PI);
+
+    // 🔥 Ajuste porque el coche mira hacia ARRIBA por defecto
+    anguloDeg -= 90;
 
     alumno.angulo = anguloDeg;
   });
 
-  // Agrupar por casilla
+  // Agrupar por casilla (offset si coinciden)
   const agrupados = {};
+
   alumnos.forEach(p => {
     if (!agrupados[p.casilla]) agrupados[p.casilla] = [];
     agrupados[p.casilla].push(p);
@@ -62,7 +73,7 @@ alumno.angulo = anguloDeg;
     });
   });
 
-  // Pintar
+  // Pintar coches
   alumnos.forEach(alumno => {
 
     const img = document.createElement('img');
@@ -78,10 +89,12 @@ alumno.angulo = anguloDeg;
     img.style.top = alumno.y + 'px';
     img.style.transform = `rotate(${alumno.angulo}deg)`;
     img.style.transformOrigin = "center center";
-    img.style.transition = "left 0.4s linear, top 0.4s linear, transform 0.4s linear";
+    img.style.transition =
+      "left 0.4s linear, top 0.4s linear, transform 0.6s ease-out";
 
     contenedor.appendChild(img);
 
+    // Nombre encima
     const label = document.createElement('div');
     label.textContent = alumno.nombre;
     label.classList.add('nombre-coches');

@@ -1,7 +1,16 @@
-// profesor.js
 import { pintarCoches } from './circuito.js';
+import { obtenerAlumnos } from './api.js';
 
-// Espera a que todo el DOM esté cargado
-document.addEventListener('DOMContentLoaded', () => {
-  pintarCoches();
+document.addEventListener('DOMContentLoaded', async () => {
+
+  try {
+    const alumnos = await obtenerAlumnos();
+    console.log("ALUMNOS DESDE BACKEND:", alumnos);
+
+    pintarCoches(alumnos);
+
+  } catch (error) {
+    console.error("Error cargando alumnos:", error);
+  }
+
 });
