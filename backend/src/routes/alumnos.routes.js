@@ -1,12 +1,13 @@
 import express from 'express';
 import Alumno from '../models/Alumno.js';
+import verificarToken from '../middleware/auth.js';
 
 const router = express.Router();
 
 /**
- * Crear alumno
+ * Crear alumno (protegido)
  */
-router.post('/', async (req, res) => {
+router.post('/', verificarToken, async (req, res) => {
   try {
     const alumno = new Alumno(req.body);
     await alumno.save();
@@ -17,9 +18,9 @@ router.post('/', async (req, res) => {
 });
 
 /**
- * Obtener todos los alumnos
+ * Obtener todos los alumnos (protegido)
  */
-router.get('/', async (req, res) => {
+router.get('/', verificarToken, async (req, res) => {
   try {
     const alumnos = await Alumno.find();
     res.json(alumnos);
