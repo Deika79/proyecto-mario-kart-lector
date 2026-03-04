@@ -1,8 +1,19 @@
+const token = localStorage.getItem("token");
+const rol = localStorage.getItem("rol");
+
+if (!token || rol !== "padre") {
+  window.location.href = "index.html";
+}
 import { obtenerAlumnos, registrarMinutos } from './api.js';
 
 const form = document.getElementById('registroForm');
 const alumnoSelect = document.getElementById('alumnoId');
 const mensaje = document.getElementById('mensaje');
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("rol");
+  window.location.href = "index.html";
+});
 
 // Cargar alumnos al cargar la página
 async function cargarAlumnos() {
