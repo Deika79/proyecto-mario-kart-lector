@@ -59,11 +59,16 @@ export async function registrarMinutos(alumnoId, minutos) {
       body: JSON.stringify({ alumnoId, minutos })
     });
 
-    if (!res.ok) throw new Error("Error registrando minutos");
+    const data = await res.json();
 
-    return await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Error registrando minutos");
+    }
+
+    return data;
+
   } catch (error) {
     console.error("Error registrando minutos:", error);
-    return null;
+    throw error;
   }
 }

@@ -1,24 +1,31 @@
+import { obtenerAlumnos, registrarMinutos } from './api.js';
+
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
 
 if (!token || rol !== "padre") {
   window.location.href = "index.html";
 }
-import { obtenerAlumnos, registrarMinutos } from './api.js';
 
 const form = document.getElementById('registroForm');
 const alumnoSelect = document.getElementById('alumnoId');
 const mensaje = document.getElementById('mensaje');
-document.getElementById("logoutBtn").addEventListener("click", () => {
+const minutosInput = document.getElementById('minutos');
+const logoutBtn = document.getElementById("logoutBtn");
+
+// Logout
+logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("token");
   localStorage.removeItem("rol");
   window.location.href = "index.html";
 });
 
-// Cargar alumnos al cargar la página
+// Cargar alumnos (solo traerá el suyo)
 async function cargarAlumnos() {
   const alumnos = await obtenerAlumnos();
+
   alumnoSelect.innerHTML = '';
+
   alumnos.forEach(alumno => {
     const option = document.createElement('option');
     option.value = alumno._id;
@@ -28,22 +35,25 @@ async function cargarAlumnos() {
 }
 
 // Enviar formulario
-form.addEventListener('submit', async (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const alumnoId = alumnoSelect.value;
-  const minutos = parseInt(document.getElementById('minutos').value);
+  const minutos = Number(minutosInput.value);
 
-  if (!alumnoId || !minutos) return;
+  if (!alumnoId || isNaN(minutos) || minutos <= 0) {
+    mensaje.textContent = "Introduce un número válido de minutos.";
+    return;
+  }
 
-  const res = await registrarMinutos(alumnoId, minutos);
+  try {
+    await registrarMinutos(alumnoId, minutos);
 
-  if (res.error) {
-    mensaje.textContent = `Error: ${res.error}`;
-    mensaje.style.color = 'red';
-  } else {
-    mensaje.textContent = `✅ Minutos registrados correctamente para ${alumnoSelect.selectedOptions[0].text}`;
-    mensaje.style.color = 'green';
-    form.reset();
+    mensaje.textContent = "Minutos registrados correctamente.";
+    minutosInput.value = "";
+
+  } catch (error) {
+    mensaje.textContent = error.message;
   }
 });
 

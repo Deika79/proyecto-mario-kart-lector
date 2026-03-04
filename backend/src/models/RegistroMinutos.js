@@ -21,4 +21,6 @@ const registroMinutosSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model('RegistroMinutos', registroMinutosSchema);
+const RegistroMinutos = mongoose.model('RegistroMinutos', registroMinutosSchema);
+
+export default RegistroMinutos;

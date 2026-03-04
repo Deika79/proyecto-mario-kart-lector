@@ -6,28 +6,31 @@ import verificarToken from '../middleware/auth.js';
 
 const router = express.Router();
 
+const LIMITE_DIARIO = 30;
+
 /**
  * POST /api/registros
  * { alumnoId, minutos }
- * Registra minutos para un alumno según rol
  */
 router.post('/', verificarToken, async (req, res) => {
   try {
-    const { alumnoId, minutos } = req.body;
+    const { alumnoId } = req.body;
+    const minutos = Number(req.body.minutos);
 
-    if (!alumnoId || !minutos) {
-      return res.status(400).json({ error: 'Faltan datos' });
+    if (!alumnoId || isNaN(minutos)) {
+      return res.status(400).json({ error: 'Faltan datos o minutos inválidos' });
     }
 
-    // Buscar alumno
+    if (minutos <= 0) {
+      return res.status(400).json({ error: 'Minutos inválidos' });
+    }
+
     const alumno = await Alumno.findById(alumnoId);
     if (!alumno) {
       return res.status(404).json({ error: 'Alumno no encontrado' });
     }
 
     // 🔐 CONTROL POR ROL
-
-    // Si es PADRE → solo puede registrar a su hijo
     if (req.usuario.rol === "padre") {
       const usuario = await Usuario.findById(req.usuario.id);
 
@@ -36,20 +39,42 @@ router.post('/', verificarToken, async (req, res) => {
       }
 
       if (usuario.alumnoId.toString() !== alumnoId) {
-        return res.status(403).json({ error: 'No puedes registrar minutos a este alumno' });
+        return res.status(403).json({
+          error: 'No puedes registrar minutos a este alumno'
+        });
       }
     }
 
-    // PROFESOR puede registrar a cualquiera (no hace falta validar más)
+    // 🗓 CALCULAR INICIO Y FIN DEL DÍA
+    const inicioDia = new Date();
+    inicioDia.setHours(0, 0, 0, 0);
+
+    const finDia = new Date(inicioDia);
+    finDia.setDate(finDia.getDate() + 1);
+
+    const registrosHoy = await RegistroMinutos.find({
+      alumnoId,
+      fecha: { $gte: inicioDia, $lt: finDia }
+    });
+
+    const minutosHoy = registrosHoy.reduce(
+      (total, r) => total + r.minutos,
+      0
+    );
+
+    if (minutosHoy + minutos > LIMITE_DIARIO) {
+      return res.status(400).json({
+        error: `Límite diario de ${LIMITE_DIARIO} minutos superado. Ya tiene ${minutosHoy} minutos hoy.`
+      });
+    }
 
     // Crear registro
-    const registro = await RegistroMinutos.create({
+    await RegistroMinutos.create({
       alumnoId,
       minutos,
       fecha: new Date()
     });
 
-    // Actualizar minutos totales
     alumno.minutosTotales += minutos;
     await alumno.save();
 
