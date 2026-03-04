@@ -1,38 +1,69 @@
 const API_URL = "http://localhost:5000/api";
 
+/* =========================
+   LOGIN
+========================= */
+export async function login(email, password) {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error en login");
+  }
+
+  return data;
+}
+
+/* =========================
+   OBTENER ALUMNOS (PROTEGIDO)
+========================= */
 export async function obtenerAlumnos() {
   try {
-    const res = await fetch(`${API_URL}/alumnos`);
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_URL}/alumnos`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!res.ok) throw new Error("No autorizado");
+
     return await res.json();
   } catch (error) {
-    console.error('Error obteniendo alumnos:', error);
+    console.error("Error obteniendo alumnos:", error);
     return [];
   }
 }
 
-export async function obtenerPosiciones() {
-  try {
-    const res = await fetch(`${API_URL}/alumnos`);
-    return await res.json();
-  } catch (error) {
-    console.error("Error obteniendo posiciones:", error);
-    return [];
-  }
-}
-
+/* =========================
+   REGISTRAR MINUTOS (PROTEGIDO)
+========================= */
 export async function registrarMinutos(alumnoId, minutos) {
   try {
+    const token = localStorage.getItem("token");
+
     const res = await fetch(`${API_URL}/registros`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({ alumnoId, minutos })
     });
 
-    if (!res.ok) throw new Error('Error registrando minutos');
+    if (!res.ok) throw new Error("Error registrando minutos");
 
-    return await res.json(); // devuelve { registro, alumno }
+    return await res.json();
   } catch (error) {
-    console.error('Error registrando minutos:', error);
+    console.error("Error registrando minutos:", error);
     return null;
   }
 }

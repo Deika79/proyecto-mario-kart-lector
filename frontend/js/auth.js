@@ -1,17 +1,29 @@
-const form = document.getElementById('loginForm');
+import { login } from "./api.js";
 
-form.addEventListener('submit', (e) => {
+const form = document.getElementById("loginForm");
+const errorMensaje = document.getElementById("errorMensaje");
+
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const usuario = document.getElementById('usuario').value;
-  const rol = document.getElementById('rol').value;
 
-  // Guardamos en localStorage para simular sesión
-  localStorage.setItem('usuario', usuario);
-  localStorage.setItem('rol', rol);
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  if (rol === 'profesor') {
-    window.location.href = 'profesor.html';
-  } else {
-    window.location.href = 'padre.html';
+  try {
+    const data = await login(email, password);
+
+    // Guardar token y rol
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("rol", data.rol);
+
+    // Redirigir según rol
+    if (data.rol === "profesor") {
+      window.location.href = "profesor.html";
+    } else {
+      window.location.href = "padre.html";
+    }
+
+  } catch (error) {
+    errorMensaje.textContent = error.message;
   }
 });
