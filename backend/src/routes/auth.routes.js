@@ -8,10 +8,11 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "secreto_super_seguro";
 
 /**
- * Registro
+ * REGISTRO
  */
 router.post('/register', async (req, res) => {
   try {
+
     const { nombre, email, password, rol, alumnoId } = req.body;
 
     const hash = await bcrypt.hash(password, 10);
@@ -27,24 +28,32 @@ router.post('/register', async (req, res) => {
     await nuevoUsuario.save();
 
     res.status(201).json({ message: 'Usuario creado' });
+
   } catch (error) {
+
+    console.error("Error register:", error);
+
     res.status(500).json({ error: error.message });
+
   }
 });
 
 /**
- * Login
+ * LOGIN
  */
 router.post('/login', async (req, res) => {
   try {
+
     const { email, password } = req.body;
 
     const usuario = await Usuario.findOne({ email });
+
     if (!usuario) {
       return res.status(400).json({ error: 'Usuario no encontrado' });
     }
 
     const valido = await bcrypt.compare(password, usuario.password);
+
     if (!valido) {
       return res.status(400).json({ error: 'Contraseña incorrecta' });
     }
@@ -58,12 +67,17 @@ router.post('/login', async (req, res) => {
     res.json({ token, rol: usuario.rol });
 
   } catch (error) {
+
+    console.error("Error login:", error);
+
     res.status(500).json({ error: error.message });
+
   }
 });
 
-export default router;
-// OBTENER TODOS LOS USUARIOS (solo profesor)
+/**
+ * OBTENER USUARIOS (SIN PASSWORD)
+ */
 router.get('/', async (req, res) => {
   try {
 
@@ -73,7 +87,11 @@ router.get('/', async (req, res) => {
 
   } catch (error) {
 
+    console.error("Error obteniendo usuarios:", error);
+
     res.status(500).json({ error: 'Error obteniendo usuarios' });
 
   }
 });
+
+export default router;
