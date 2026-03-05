@@ -63,3 +63,17 @@ router.post('/login', async (req, res) => {
 });
 
 export default router;
+// OBTENER TODOS LOS USUARIOS (solo profesor)
+router.get('/', async (req, res) => {
+  try {
+
+    const usuarios = await Usuario.find().select('-password');
+
+    res.json(usuarios);
+
+  } catch (error) {
+
+    res.status(500).json({ error: 'Error obteniendo usuarios' });
+
+  }
+});
