@@ -170,3 +170,10 @@ export async function obtenerUsuarios() {
 
   return data;
 }
+export async function despertarBackend() {
+  try {
+    await fetch("https://mario-kart-lector-backend.onrender.com");
+  } catch (e) {
+    console.log("Despertando backend...");
+  }
+}

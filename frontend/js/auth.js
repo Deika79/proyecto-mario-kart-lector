@@ -1,4 +1,7 @@
 import { login } from "./api.js";
+import { despertarBackend } from "./api.js";
+
+despertarBackend();
 
 const form = document.getElementById("loginForm");
 const errorMensaje = document.getElementById("errorMensaje");
