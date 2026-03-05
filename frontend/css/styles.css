@@ -1,3 +1,38 @@
+/* ===== RESET ===== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ff512f, #dd2476);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* ===== BANNER ===== */
+
+.banner {
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.banner img {
+  max-width: 700px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* ===== LOGIN ===== */
 
 .login-container {
@@ -21,6 +56,128 @@
   margin: 8px auto;
 }
 
+/* ===== CONTENEDOR PRINCIPAL ===== */
+
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 30px;
+}
+
+/* ===== PANEL ESTILO VIDEOJUEGO ===== */
+
+.panel {
+  background: rgba(255,255,255,0.95);
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow:
+    0 15px 35px rgba(0,0,0,0.3),
+    inset 0 0 15px rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  animation: aparecer 0.6s ease-out;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== CABECERA DEL PANEL ===== */
+
+.panel-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.panel-header img {
+  height: 70px;
+}
+
+/* ===== CIRCUITO ===== */
+
+#circuito-container {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+#circuito {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ===== COCHES ===== */
+
+#coches-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.coche {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  transform-origin: center center;
+  transition: left 0.5s linear, top 0.5s linear, transform 0.5s linear;
+}
+
+.coche:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.nombre-coches {
+  position: absolute;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow:
+    0 0 5px #000,
+    0 0 10px #000;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* ===== BOTONES ESTILO ARCADE ===== */
+
+button {
+  background: linear-gradient(145deg, #ffcc00, #ff6f00);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 5px 0 #cc5200;
+  margin-top: 10px;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 0 #cc5200;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #cc5200;
+}
+
 /* ===== BOTONES PROFESOR ===== */
 
 .botones-profesor {
@@ -31,18 +188,110 @@
   flex-wrap: wrap;
 }
 
-/* ===== BANNER MEJORADO ===== */
+/* ===== FORMULARIOS ===== */
 
-.banner {
+input,
+select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  margin: 8px 0;
   width: 100%;
-  background: white;
-  display: flex;
-  justify-content: center;
-  padding: 10px 0;
 }
 
-.banner img {
-  max-width: 700px;
-  width: 100%;
-  height: auto;
+input:focus,
+select:focus {
+  border-color: #ff6f00;
+  outline: none;
+}
+
+/* ===== RANKING ===== */
+
+.panel-ranking {
+  margin-top: 30px;
+}
+
+.ranking-lista {
+  list-style: none;
+  margin-top: 15px;
+}
+
+.ranking-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffffff, #f3f3f3);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  font-weight: bold;
+}
+
+.ranking-izq {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ranking-pos {
+  font-size: 20px;
+  width: 30px;
+  text-align: center;
+}
+
+.ranking-coche {
+  width: 30px;
+  height: 30px;
+}
+
+.ranking-nombre {
+  font-size: 15px;
+}
+
+.ranking-min {
+  font-size: 14px;
+  color: #444;
+}
+
+/* ===== PODIO ===== */
+
+.ranking-lista li:nth-child(1) {
+  background: linear-gradient(145deg, gold, #ffd700);
+}
+
+.ranking-lista li:nth-child(2) {
+  background: linear-gradient(145deg, silver, #e3e3e3);
+}
+
+.ranking-lista li:nth-child(3) {
+  background: linear-gradient(145deg, #cd7f32, #b87333);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+
+  .panel {
+    padding: 20px;
+  }
+
+  .panel-header img {
+    height: 55px;
+  }
+
+  .coche {
+    width: 35px;
+    height: 35px;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .login-container {
+    margin-top: 40px;
+    padding: 30px;
+  }
+
 }
