@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de alumnos</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<header class="banner">
+  <img src="assets/profesor/banner.png" alt="Mario Kart Lector">
+</header>
+
+<main class="main-container">
+
+  <section class="panel">
+
+    <div class="panel-header">
+      <img src="assets/profesor/profe.png">
+      <h2>Gestión de alumnos</h2>
+    </div>
+
+    <!-- Crear alumno -->
+    <form id="crearAlumnoForm">
+
+      <label>Nombre alumno</label>
+      <input type="text" id="nombreAlumno" required>
+
+      <label>Coche</label>
+      <select id="cocheAlumno">
+        <option value="coche1">Coche rojo</option>
+        <option value="coche2">Coche verde</option>
+        <option value="coche3">Coche azul</option>
+        <option value="coche4">Coche amarillo</option>
+      </select>
+
+      <button type="submit">Crear alumno</button>
+
+    </form>
+
+    <p id="mensajeCrear"></p>
+
+    <hr style="margin:30px 0">
+
+    <!-- Lista alumnos -->
+    <h3>Alumnos actuales</h3>
+
+    <ul id="listaAlumnos"></ul>
+
+    <br>
+
+    <button id="volverBtn">Volver</button>
+
+  </section>
+
+</main>
+
+<script type="module" src="js/alumnos.js"></script>
+
+</body>
+</html>
