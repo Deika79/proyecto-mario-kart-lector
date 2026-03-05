@@ -63,4 +63,29 @@ router.get('/', verificarToken, async (req, res) => {
   }
 });
 
+// RESET COMPLETO DE CLASE
+router.delete("/reset", verificarToken, async (req, res) => {
+
+  try {
+
+    if (req.usuario.rol !== "profesor") {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+
+    const RegistroMinutos = (await import('../models/RegistroMinutos.js')).default;
+
+    await Alumno.deleteMany({});
+    await RegistroMinutos.deleteMany({});
+
+    res.json({ mensaje: "Clase reiniciada correctamente" });
+
+  } catch (error) {
+
+    console.error(error);
+    res.status(500).json({ error: "Error reiniciando clase" });
+
+  }
+
+});
+
 export default router;

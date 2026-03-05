@@ -99,3 +99,23 @@ export async function crearAlumno(nombre, cocheSeleccionado) {
 
   return data;
 }
+export async function resetClase() {
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/alumnos/reset`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error reiniciando clase");
+  }
+
+  return data;
+
+}

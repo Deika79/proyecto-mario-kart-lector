@@ -1,4 +1,4 @@
-import { obtenerAlumnos, crearAlumno } from './api.js';
+import { obtenerAlumnos, crearAlumno, resetClase } from './api.js';
 
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
@@ -10,10 +10,13 @@ if (!token || rol !== "profesor") {
 const form = document.getElementById("crearAlumnoForm");
 const mensaje = document.getElementById("mensajeCrear");
 const lista = document.getElementById("listaAlumnos");
+const resetBtn = document.getElementById("resetClaseBtn");
 
 document.getElementById("volverBtn").onclick = () => {
   window.location.href = "profesor.html";
 };
+
+/* ===== CARGAR ALUMNOS ===== */
 
 async function cargarAlumnos() {
 
@@ -21,17 +24,19 @@ async function cargarAlumnos() {
 
   lista.innerHTML = "";
 
-  alumnos.forEach(a => {
+  alumnos.forEach(alumno => {
 
     const li = document.createElement("li");
 
-    li.textContent = `${a.nombre} — ${a.minutosTotales} min`;
+    li.textContent = `${alumno.nombre} — ${alumno.minutosTotales} min`;
 
     lista.appendChild(li);
 
   });
 
 }
+
+/* ===== CREAR ALUMNO ===== */
 
 form.addEventListener("submit", async (e) => {
 
@@ -57,5 +62,33 @@ form.addEventListener("submit", async (e) => {
   }
 
 });
+
+/* ===== RESET CLASE ===== */
+
+resetBtn.addEventListener("click", async () => {
+
+  const confirmar = confirm(
+    "Esto borrará TODOS los alumnos y registros de lectura.\n\n¿Seguro que quieres reiniciar la clase?"
+  );
+
+  if (!confirmar) return;
+
+  try {
+
+    await resetClase();
+
+    alert("Clase reiniciada correctamente");
+
+    location.reload();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+});
+
+/* ===== INICIALIZAR ===== */
 
 cargarAlumnos();
