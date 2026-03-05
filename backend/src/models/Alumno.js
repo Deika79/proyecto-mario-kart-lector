@@ -13,11 +13,7 @@ const alumnoSchema = new mongoose.Schema(
     minutosTotales: {
       type: Number,
       default: 0,
-    },
-    claseId: {
-      type: String,
-      required: true,
-    },
+    }
   },
   {
     timestamps: true,
@@ -25,4 +21,3 @@ const alumnoSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Alumno', alumnoSchema);
-

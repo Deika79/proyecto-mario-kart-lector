@@ -72,3 +72,30 @@ export async function registrarMinutos(alumnoId, minutos) {
     throw error;
   }
 }
+/* =========================
+   CREAR ALUMNO (PROFESOR)
+========================= */
+export async function crearAlumno(nombre, cocheSeleccionado) {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/alumnos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      nombre,
+      cocheSeleccionado,
+      minutosTotales: 0
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error creando alumno");
+  }
+
+  return data;
+}

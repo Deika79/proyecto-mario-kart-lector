@@ -23,20 +23,47 @@
         <img src="assets/profesor/profe.png" alt="Profesor">
       </div>
 
+      <!-- Circuito -->
       <div id="circuito-container">
         <img src="assets/circuitos/circuito1.png" alt="Circuito" id="circuito">
         <div id="coches-container"></div>
       </div>
-      <button id="logoutBtn">Cerrar sesión</button>
+
+      <!-- Crear alumno -->
+      <div class="panel panel-crear">
+        <h2>Crear nuevo alumno</h2>
+
+        <form id="crearAlumnoForm">
+          <input 
+            type="text" 
+            id="nombreAlumno" 
+            placeholder="Nombre del alumno" 
+            required
+          >
+
+          <select id="cocheAlumno">
+            <option value="rojo">Coche Rojo</option>
+            <option value="azul">Coche Azul</option>
+            <option value="verde">Coche Verde</option>
+            <option value="amarillo">Coche Amarillo</option>
+          </select>
+
+          <button type="submit">Crear alumno</button>
+        </form>
+
+        <p id="mensajeCrear"></p>
+      </div>
+
+      <!-- Logout -->
+      <button type="button" id="logoutBtn">Cerrar sesión</button>
 
     </section>
 
   </main>
 
   <!-- Scripts -->
-  <script type="module" src="js/api.js"></script>
   <script type="module" src="js/circuito.js"></script>
   <script type="module" src="js/profesor.js"></script>
-  
+
 </body>
 </html>
