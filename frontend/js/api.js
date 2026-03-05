@@ -122,3 +122,33 @@ export async function resetClase() {
   return data;
 
 }
+/* =========================
+   CREAR USUARIO PADRE
+========================= */
+export async function crearPadre(nombre, email, password, alumnoId) {
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      nombre,
+      email,
+      password,
+      rol: "padre",
+      alumnoId
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error creando usuario padre");
+  }
+
+  return data;
+}

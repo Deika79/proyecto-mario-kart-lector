@@ -1,94 +1,144 @@
-import { obtenerAlumnos, crearAlumno, resetClase } from './api.js';
+import { obtenerAlumnos, crearAlumno, resetClase, crearPadre } from './api.js';
 
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
 
 if (!token || rol !== "profesor") {
-  window.location.href = "index.html";
+window.location.href = "index.html";
 }
 
 const form = document.getElementById("crearAlumnoForm");
 const mensaje = document.getElementById("mensajeCrear");
 const lista = document.getElementById("listaAlumnos");
-const resetBtn = document.getElementById("resetClaseBtn");
+
+const modal = document.getElementById("modalPadre");
+const padreForm = document.getElementById("crearPadreForm");
 
 document.getElementById("volverBtn").onclick = () => {
-  window.location.href = "profesor.html";
+window.location.href = "profesor.html";
 };
 
-/* ===== CARGAR ALUMNOS ===== */
+/* CARGAR ALUMNOS */
 
 async function cargarAlumnos() {
 
-  const alumnos = await obtenerAlumnos();
+const alumnos = await obtenerAlumnos();
 
-  lista.innerHTML = "";
+lista.innerHTML = "";
 
-  alumnos.forEach(alumno => {
+alumnos.forEach(alumno => {
 
-    const li = document.createElement("li");
+const li = document.createElement("li");
 
-    li.textContent = `${alumno.nombre} — ${alumno.minutosTotales} min`;
+li.innerHTML = `
+${alumno.nombre} — ${alumno.minutosTotales} min
+<button class="crearPadreBtn" data-id="${alumno._id}">
+Crear usuario padre
+</button>
+`;
 
-    lista.appendChild(li);
+lista.appendChild(li);
 
-  });
+});
+
+document.querySelectorAll(".crearPadreBtn").forEach(btn => {
+
+btn.addEventListener("click", () => {
+
+document.getElementById("padreAlumnoId").value = btn.dataset.id;
+
+modal.style.display = "block";
+
+});
+
+});
 
 }
 
-/* ===== CREAR ALUMNO ===== */
+/* CREAR ALUMNO */
 
 form.addEventListener("submit", async (e) => {
 
-  e.preventDefault();
+e.preventDefault();
 
-  const nombre = document.getElementById("nombreAlumno").value;
-  const coche = document.getElementById("cocheAlumno").value;
+const nombre = document.getElementById("nombreAlumno").value;
+const coche = document.getElementById("cocheAlumno").value;
 
-  try {
+try {
 
-    await crearAlumno(nombre, coche);
+await crearAlumno(nombre, coche);
 
-    mensaje.textContent = "Alumno creado correctamente";
+mensaje.textContent = "Alumno creado correctamente";
 
-    form.reset();
+form.reset();
 
-    cargarAlumnos();
+cargarAlumnos();
 
-  } catch (error) {
+} catch (error) {
 
-    mensaje.textContent = error.message;
+mensaje.textContent = error.message;
 
-  }
-
-});
-
-/* ===== RESET CLASE ===== */
-
-resetBtn.addEventListener("click", async () => {
-
-  const confirmar = confirm(
-    "Esto borrará TODOS los alumnos y registros de lectura.\n\n¿Seguro que quieres reiniciar la clase?"
-  );
-
-  if (!confirmar) return;
-
-  try {
-
-    await resetClase();
-
-    alert("Clase reiniciada correctamente");
-
-    location.reload();
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
+}
 
 });
 
-/* ===== INICIALIZAR ===== */
+/* CREAR PADRE */
+
+padreForm.addEventListener("submit", async (e) => {
+
+e.preventDefault();
+
+const alumnoId = document.getElementById("padreAlumnoId").value;
+const nombre = document.getElementById("padreNombre").value;
+const email = document.getElementById("padreEmail").value;
+const password = document.getElementById("padrePassword").value;
+
+try {
+
+await crearPadre(nombre, email, password, alumnoId);
+
+document.getElementById("mensajePadre").textContent = "Usuario padre creado";
+
+padreForm.reset();
+
+modal.style.display = "none";
+
+} catch (error) {
+
+document.getElementById("mensajePadre").textContent = error.message;
+
+}
+
+});
+
+document.getElementById("cancelarPadre").onclick = () => {
+modal.style.display = "none";
+};
+
+/* RESET CLASE */
+
+document.getElementById("resetClaseBtn").addEventListener("click", async () => {
+
+const confirmar = confirm(
+"Esto borrará TODOS los alumnos y registros.\n\n¿Seguro?"
+);
+
+if (!confirmar) return;
+
+try {
+
+await resetClase();
+
+alert("Clase reiniciada");
+
+location.reload();
+
+} catch (error) {
+
+alert(error.message);
+
+}
+
+});
 
 cargarAlumnos();

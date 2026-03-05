@@ -1,68 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Gestión de alumnos</title>
-  <link rel="stylesheet" href="css/styles.css">
+<meta charset="UTF-8">
+<title>Gestión de alumnos</title>
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
 
 <header class="banner">
-  <img src="assets/profesor/banner.png" alt="Mario Kart Lector">
+<img src="assets/profesor/banner.png" alt="Mario Kart Lector">
 </header>
 
 <main class="main-container">
 
-  <section class="panel">
+<section class="panel">
 
-    <div class="panel-header">
-      <img src="assets/profesor/profe.png">
-      <h2>Gestión de alumnos</h2>
-    </div>
+<div class="panel-header">
+<img src="assets/profesor/profe.png">
+<h2>Gestión de alumnos</h2>
+</div>
 
-    <!-- Crear alumno -->
-    <form id="crearAlumnoForm">
+<!-- CREAR ALUMNO -->
 
-      <label>Nombre alumno</label>
-      <input type="text" id="nombreAlumno" required>
+<form id="crearAlumnoForm">
 
-      <label>Coche</label>
-      <select id="cocheAlumno">
-        <option value="coche1">Coche rojo</option>
-        <option value="coche2">Coche verde</option>
-        <option value="coche3">Coche azul</option>
-        <option value="coche4">Coche amarillo</option>
-      </select>
+<label>Nombre alumno</label>
+<input type="text" id="nombreAlumno" required>
 
-      <button type="submit">Crear alumno</button>
+<label>Coche</label>
+<select id="cocheAlumno">
+<option value="coche1">Coche rojo</option>
+<option value="coche2">Coche verde</option>
+<option value="coche3">Coche azul</option>
+<option value="coche4">Coche amarillo</option>
+</select>
 
-    </form>
+<button type="submit">Crear alumno</button>
 
-    <p id="mensajeCrear"></p>
+</form>
 
-    <hr style="margin:30px 0">
+<p id="mensajeCrear"></p>
 
-    <!-- Lista alumnos -->
-    <h3>Alumnos actuales</h3>
+<hr style="margin:30px 0">
 
-    <ul id="listaAlumnos"></ul>
+<h3>Alumnos actuales</h3>
 
-    <br>
+<ul id="listaAlumnos"></ul>
 
-    <hr style="margin:30px 0">
+<hr style="margin:30px 0">
 
-    <h3>⚠️ Reiniciar curso</h3>
+<h3>⚠️ Reiniciar curso</h3>
 
-    <button id="resetClaseBtn">
-       Reiniciar clase (borrar todos los datos)
-    </button>
+<button id="resetClaseBtn">
+Reiniciar clase (borrar todos los datos)
+</button>
 
-    <button id="volverBtn">Volver</button>
+<br><br>
 
-  </section>
+<button id="volverBtn">Volver</button>
+
+</section>
 
 </main>
+
+<!-- MODAL CREAR PADRE -->
+
+<div id="modalPadre" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+
+<div style="background:white; padding:30px; width:400px; margin:120px auto; border-radius:10px;">
+
+<h3>Crear usuario padre</h3>
+
+<form id="crearPadreForm">
+
+<input type="hidden" id="padreAlumnoId">
+
+<label>Nombre padre</label>
+<input type="text" id="padreNombre" required>
+
+<label>Email</label>
+<input type="email" id="padreEmail" required>
+
+<label>Password</label>
+<input type="text" id="padrePassword" required>
+
+<br><br>
+
+<button type="submit">Crear usuario</button>
+
+<button type="button" id="cancelarPadre">Cancelar</button>
+
+</form>
+
+<p id="mensajePadre"></p>
+
+</div>
+
+</div>
 
 <script type="module" src="js/alumnos.js"></script>
 
