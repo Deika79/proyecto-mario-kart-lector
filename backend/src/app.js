@@ -6,31 +6,41 @@ import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 
-// Orígenes permitidos
+/* ===== CORS ===== */
+
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://127.0.0.1:3000',
-  'https://mario-kart-lector.vercel.app' // luego pondremos tu dominio real de Vercel
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://proyecto-mario-kart-lector.vercel.app"
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // Permitir requests sin origin (Postman, curl)
+  origin: function(origin, callback) {
+
+    // permitir Postman o requests sin origin
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('No permitido por CORS'));
+      return callback(null, true);
     }
-  }
+
+    return callback(new Error("CORS no permitido: " + origin));
+
+  },
+  credentials: true
 }));
 
+/* ===== MIDDLEWARE ===== */
+
 app.use(express.json());
+
+/* ===== ROUTES ===== */
 
 app.use('/api/alumnos', alumnosRoutes);
 app.use('/api/registros', registrosRoutes);
 app.use('/api/auth', authRoutes);
+
+/* ===== TEST ROUTE ===== */
 
 app.get('/', (req, res) => {
   res.send('API Mario Kart Lector funcionando 🏁');
