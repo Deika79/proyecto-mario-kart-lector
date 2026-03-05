@@ -1,9 +1,17 @@
 import { obtenerAlumnos, crearAlumno, resetClase, crearPadre, obtenerUsuarios } from './api.js';
 
+/* =========================
+   GENERAR PASSWORD
+========================= */
+
 function generarPassword() {
   const numero = Math.floor(1000 + Math.random() * 9000);
   return `lectura-${numero}`;
 }
+
+/* =========================
+   CONTROL LOGIN
+========================= */
 
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
@@ -12,6 +20,10 @@ if (!token || rol !== "profesor") {
   window.location.href = "index.html";
 }
 
+/* =========================
+   ELEMENTOS DOM
+========================= */
+
 const form = document.getElementById("crearAlumnoForm");
 const mensaje = document.getElementById("mensajeCrear");
 const lista = document.getElementById("listaAlumnos");
@@ -19,11 +31,20 @@ const lista = document.getElementById("listaAlumnos");
 const modal = document.getElementById("modalPadre");
 const padreForm = document.getElementById("crearPadreForm");
 
+const passwordInput = document.getElementById("padrePassword");
+const passwordTexto = document.getElementById("passwordGenerada");
+
+/* =========================
+   BOTÓN VOLVER
+========================= */
+
 document.getElementById("volverBtn").onclick = () => {
   window.location.href = "profesor.html";
 };
 
-/* CARGAR ALUMNOS */
+/* =========================
+   CARGAR ALUMNOS
+========================= */
 
 async function cargarAlumnos() {
 
@@ -52,6 +73,7 @@ async function cargarAlumnos() {
       <button class="crearPadreBtn" data-id="${alumno._id}">
         Crear usuario padre
       </button>
+      <br><br>
     `;
 
     lista.appendChild(li);
@@ -64,6 +86,12 @@ async function cargarAlumnos() {
 
       document.getElementById("padreAlumnoId").value = btn.dataset.id;
 
+      const password = generarPassword();
+
+      passwordInput.value = password;
+
+      passwordTexto.textContent = `Password generada: ${password}`;
+
       modal.style.display = "block";
 
     });
@@ -72,7 +100,9 @@ async function cargarAlumnos() {
 
 }
 
-/* CREAR ALUMNO */
+/* =========================
+   CREAR ALUMNO
+========================= */
 
 form.addEventListener("submit", async (e) => {
 
@@ -99,7 +129,9 @@ form.addEventListener("submit", async (e) => {
 
 });
 
-/* CREAR PADRE */
+/* =========================
+   CREAR PADRE
+========================= */
 
 padreForm.addEventListener("submit", async (e) => {
 
@@ -108,7 +140,7 @@ padreForm.addEventListener("submit", async (e) => {
   const alumnoId = document.getElementById("padreAlumnoId").value;
   const nombre = document.getElementById("padreNombre").value;
   const email = document.getElementById("padreEmail").value;
-  const password = document.getElementById("padrePassword").value;
+  const password = passwordInput.value;
 
   try {
 
@@ -130,11 +162,56 @@ padreForm.addEventListener("submit", async (e) => {
 
 });
 
+/* =========================
+   CUANDO CARGA LA PÁGINA
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btnGenerar = document.getElementById("generarPasswordBtn");
+  const btnCopiar = document.getElementById("copiarPasswordBtn");
+
+  if (btnGenerar) {
+
+    btnGenerar.addEventListener("click", () => {
+
+      const password = generarPassword();
+
+      passwordInput.value = password;
+
+      passwordTexto.textContent = `Password generada: ${password}`;
+
+    });
+
+  }
+
+  if (btnCopiar) {
+
+    btnCopiar.addEventListener("click", () => {
+
+      const password = passwordInput.value;
+
+      navigator.clipboard.writeText(password);
+
+      alert("Contraseña copiada");
+
+    });
+
+  }
+
+});
+
+/* =========================
+   CERRAR MODAL
+========================= */
+
 document.getElementById("cancelarPadre").onclick = () => {
   modal.style.display = "none";
 };
 
-/* RESET CLASE */
+/* =========================
+   RESET CLASE
+========================= */
 
 document.getElementById("resetClaseBtn").addEventListener("click", async () => {
 
@@ -159,5 +236,9 @@ document.getElementById("resetClaseBtn").addEventListener("click", async () => {
   }
 
 });
+
+/* =========================
+   INICIAR
+========================= */
 
 cargarAlumnos();
