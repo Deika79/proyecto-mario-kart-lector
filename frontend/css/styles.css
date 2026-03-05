@@ -190,3 +190,98 @@ input:focus, select:focus {
     height: 35px;
   }
 }
+/* ===== RANKING ===== */
+
+.panel-ranking {
+  margin-top: 30px;
+}
+
+.ranking-lista {
+  list-style: none;
+  margin-top: 15px;
+}
+
+.ranking-lista li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #f7f7f7, #ffffff);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  font-weight: bold;
+}
+
+.ranking-lista li:nth-child(1) {
+  background: linear-gradient(145deg, gold, #ffd700);
+}
+
+.ranking-lista li:nth-child(2) {
+  background: linear-gradient(145deg, silver, #dcdcdc);
+}
+
+.ranking-lista li:nth-child(3) {
+  background: linear-gradient(145deg, #cd7f32, #b87333);
+}
+/* ===== RANKING MARIO KART ===== */
+
+.panel-ranking {
+  margin-top: 30px;
+}
+
+.ranking-lista {
+  list-style: none;
+  margin-top: 15px;
+}
+
+.ranking-lista li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffffff, #f3f3f3);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  font-weight: bold;
+}
+
+.ranking-izq {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ranking-pos {
+  font-size: 20px;
+  width: 30px;
+  text-align: center;
+}
+
+.ranking-coche {
+  width: 30px;
+  height: 30px;
+}
+
+.ranking-nombre {
+  font-size: 15px;
+}
+
+.ranking-min {
+  font-size: 14px;
+  color: #444;
+}
+
+/* Podio */
+
+.ranking-lista li:nth-child(1) {
+  background: linear-gradient(145deg, gold, #ffd700);
+}
+
+.ranking-lista li:nth-child(2) {
+  background: linear-gradient(145deg, silver, #e3e3e3);
+}
+
+.ranking-lista li:nth-child(3) {
+  background: linear-gradient(145deg, #cd7f32, #b87333);
+}
