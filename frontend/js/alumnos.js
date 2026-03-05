@@ -1,5 +1,10 @@
 import { obtenerAlumnos, crearAlumno, resetClase, crearPadre, obtenerUsuarios } from './api.js';
 
+function generarPassword() {
+  const numero = Math.floor(1000 + Math.random() * 9000);
+  return `lectura-${numero}`;
+}
+
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
 
