@@ -152,3 +152,21 @@ export async function crearPadre(nombre, email, password, alumnoId) {
 
   return data;
 }
+export async function obtenerUsuarios() {
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/auth`, {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error obteniendo usuarios");
+  }
+
+  return data;
+}

@@ -1,10 +1,10 @@
-import { obtenerAlumnos, crearAlumno, resetClase, crearPadre } from './api.js';
+import { obtenerAlumnos, crearAlumno, resetClase, crearPadre, obtenerUsuarios } from './api.js';
 
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
 
 if (!token || rol !== "profesor") {
-window.location.href = "index.html";
+  window.location.href = "index.html";
 }
 
 const form = document.getElementById("crearAlumnoForm");
@@ -15,43 +15,55 @@ const modal = document.getElementById("modalPadre");
 const padreForm = document.getElementById("crearPadreForm");
 
 document.getElementById("volverBtn").onclick = () => {
-window.location.href = "profesor.html";
+  window.location.href = "profesor.html";
 };
 
 /* CARGAR ALUMNOS */
 
 async function cargarAlumnos() {
 
-const alumnos = await obtenerAlumnos();
+  const alumnos = await obtenerAlumnos();
+  const usuarios = await obtenerUsuarios();
 
-lista.innerHTML = "";
+  lista.innerHTML = "";
 
-alumnos.forEach(alumno => {
+  alumnos.forEach(alumno => {
 
-const li = document.createElement("li");
+    const padreExiste = usuarios.some(
+      u => u.rol === "padre" && u.alumnoId === alumno._id
+    );
 
-li.innerHTML = `
-${alumno.nombre} — ${alumno.minutosTotales} min
-<button class="crearPadreBtn" data-id="${alumno._id}">
-Crear usuario padre
-</button>
-`;
+    const estadoPadre = padreExiste
+      ? "Padre creado ✅"
+      : "Padre pendiente ❌";
 
-lista.appendChild(li);
+    const li = document.createElement("li");
 
-});
+    li.innerHTML = `
+      <strong>${alumno.nombre}</strong> — ${alumno.minutosTotales} min
+      <br>
+      <small>${estadoPadre}</small>
+      <br>
+      <button class="crearPadreBtn" data-id="${alumno._id}">
+        Crear usuario padre
+      </button>
+    `;
 
-document.querySelectorAll(".crearPadreBtn").forEach(btn => {
+    lista.appendChild(li);
 
-btn.addEventListener("click", () => {
+  });
 
-document.getElementById("padreAlumnoId").value = btn.dataset.id;
+  document.querySelectorAll(".crearPadreBtn").forEach(btn => {
 
-modal.style.display = "block";
+    btn.addEventListener("click", () => {
 
-});
+      document.getElementById("padreAlumnoId").value = btn.dataset.id;
 
-});
+      modal.style.display = "block";
+
+    });
+
+  });
 
 }
 
@@ -59,26 +71,26 @@ modal.style.display = "block";
 
 form.addEventListener("submit", async (e) => {
 
-e.preventDefault();
+  e.preventDefault();
 
-const nombre = document.getElementById("nombreAlumno").value;
-const coche = document.getElementById("cocheAlumno").value;
+  const nombre = document.getElementById("nombreAlumno").value;
+  const coche = document.getElementById("cocheAlumno").value;
 
-try {
+  try {
 
-await crearAlumno(nombre, coche);
+    await crearAlumno(nombre, coche);
 
-mensaje.textContent = "Alumno creado correctamente";
+    mensaje.textContent = "Alumno creado correctamente";
 
-form.reset();
+    form.reset();
 
-cargarAlumnos();
+    cargarAlumnos();
 
-} catch (error) {
+  } catch (error) {
 
-mensaje.textContent = error.message;
+    mensaje.textContent = error.message;
 
-}
+  }
 
 });
 
@@ -86,58 +98,60 @@ mensaje.textContent = error.message;
 
 padreForm.addEventListener("submit", async (e) => {
 
-e.preventDefault();
+  e.preventDefault();
 
-const alumnoId = document.getElementById("padreAlumnoId").value;
-const nombre = document.getElementById("padreNombre").value;
-const email = document.getElementById("padreEmail").value;
-const password = document.getElementById("padrePassword").value;
+  const alumnoId = document.getElementById("padreAlumnoId").value;
+  const nombre = document.getElementById("padreNombre").value;
+  const email = document.getElementById("padreEmail").value;
+  const password = document.getElementById("padrePassword").value;
 
-try {
+  try {
 
-await crearPadre(nombre, email, password, alumnoId);
+    await crearPadre(nombre, email, password, alumnoId);
 
-document.getElementById("mensajePadre").textContent = "Usuario padre creado";
+    document.getElementById("mensajePadre").textContent = "Usuario padre creado";
 
-padreForm.reset();
+    padreForm.reset();
 
-modal.style.display = "none";
+    modal.style.display = "none";
 
-} catch (error) {
+    cargarAlumnos();
 
-document.getElementById("mensajePadre").textContent = error.message;
+  } catch (error) {
 
-}
+    document.getElementById("mensajePadre").textContent = error.message;
+
+  }
 
 });
 
 document.getElementById("cancelarPadre").onclick = () => {
-modal.style.display = "none";
+  modal.style.display = "none";
 };
 
 /* RESET CLASE */
 
 document.getElementById("resetClaseBtn").addEventListener("click", async () => {
 
-const confirmar = confirm(
-"Esto borrará TODOS los alumnos y registros.\n\n¿Seguro?"
-);
+  const confirmar = confirm(
+    "Esto borrará TODOS los alumnos y registros.\n\n¿Seguro?"
+  );
 
-if (!confirmar) return;
+  if (!confirmar) return;
 
-try {
+  try {
 
-await resetClase();
+    await resetClase();
 
-alert("Clase reiniciada");
+    alert("Clase reiniciada");
 
-location.reload();
+    location.reload();
 
-} catch (error) {
+  } catch (error) {
 
-alert(error.message);
+    alert(error.message);
 
-}
+  }
 
 });
 
