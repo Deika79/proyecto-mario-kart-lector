@@ -32,10 +32,34 @@ export async function pintarCoches(alumnosBackend) {
     const casilla = Math.floor(progreso / minutosPorCasilla);
     alumno.casilla = Math.min(casilla, totalCasillas - 1);
 
-    // 🔥 ASIGNAMOS POSICIÓN (esto faltaba antes)
+    // 🔥 ASIGNAMOS POSICIÓN 
     const puntoActual = circuito1[alumno.casilla];
-    alumno.x = puntoActual.x;
-    alumno.y = puntoActual.y;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    switch (alumno.cocheSeleccionado) {
+
+      case "coche1": // rojo
+        offsetY = 0;
+        break;
+
+      case "coche2": // verde
+        offsetY = 20;
+        break;
+
+      case "coche3": // azul
+        offsetY = -20;
+        break;
+
+      case "coche4": // amarillo
+        offsetX = 20;
+        break;
+
+    }
+
+alumno.x = puntoActual.x + offsetX;
+alumno.y = puntoActual.y + offsetY;
 
     // Puntos anterior y siguiente para giro suave
     const puntoAnterior = circuito1[
