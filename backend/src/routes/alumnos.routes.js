@@ -11,7 +11,6 @@ const router = express.Router();
 router.post('/', verificarToken, async (req, res) => {
   try {
 
-    // Solo profesor puede crear alumnos
     if (req.usuario.rol !== "profesor") {
       return res.status(403).json({ error: "No autorizado" });
     }
@@ -25,6 +24,27 @@ router.post('/', verificarToken, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
+
+/**
+ * 🔵 NUEVO ENDPOINT
+ * Obtener alumnos para el circuito (todos los coches)
+ * pero solo datos necesarios
+ */
+router.get('/circuito', verificarToken, async (req, res) => {
+  try {
+
+    const alumnos = await Alumno.find().select(
+      "_id nombre cocheSeleccionado minutosTotales"
+    );
+
+    res.json(alumnos);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 /**
  * Obtener alumnos según rol
@@ -53,7 +73,7 @@ router.get('/', verificarToken, async (req, res) => {
         return res.status(404).json({ error: "Alumno no encontrado" });
       }
 
-      return res.json([alumno]); // lo devolvemos como array para no romper frontend
+      return res.json([alumno]);
     }
 
     return res.status(403).json({ error: "Rol no válido" });
@@ -63,7 +83,10 @@ router.get('/', verificarToken, async (req, res) => {
   }
 });
 
-// RESET COMPLETO DE CLASE
+
+/**
+ * RESET COMPLETO DE CLASE
+ */
 router.delete("/reset", verificarToken, async (req, res) => {
 
   try {

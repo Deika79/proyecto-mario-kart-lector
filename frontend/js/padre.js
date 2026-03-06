@@ -1,6 +1,11 @@
 import { obtenerAlumnos, registrarMinutos } from './api.js';
 import { pintarCoches } from './circuito.js';
 
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://mario-kart-lector-backend.onrender.com/api";
+
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
 
@@ -20,27 +25,60 @@ logoutBtn.addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
+/**
+ * Obtener alumnos para el circuito (todos)
+ */
+async function obtenerAlumnosCircuito() {
+
+  const res = await fetch(`${API_URL}/alumnos/circuito`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!res.ok) {
+    console.error("Error obteniendo alumnos del circuito");
+    return [];
+  }
+
+  return await res.json();
+}
+
+
+/**
+ * Cargar alumnos
+ */
 async function cargarAlumnos() {
 
-  const alumnos = await obtenerAlumnos();
+  // Este endpoint devuelve solo su hijo
+  const alumnosPadre = await obtenerAlumnos();
 
   alumnoSelect.innerHTML = '';
 
-  alumnos.forEach(alumno => {
+  alumnosPadre.forEach(alumno => {
     const option = document.createElement('option');
     option.value = alumno._id;
     option.textContent = alumno.nombre;
     alumnoSelect.appendChild(option);
   });
 
-  if (alumnos.length > 0) {
-    const hijoId = alumnos[0]._id;
-    pintarCoches(alumnos, true, hijoId);
-  }
+  if (alumnosPadre.length === 0) return;
+
+  const hijoId = alumnosPadre[0]._id;
+
+  // Este endpoint devuelve TODOS para el circuito
+  const alumnosCircuito = await obtenerAlumnosCircuito();
+
+  pintarCoches(alumnosCircuito, true, hijoId);
 
 }
 
+
+/**
+ * Registrar minutos
+ */
 form.addEventListener("submit", async (e) => {
+
   e.preventDefault();
 
   const alumnoId = alumnoSelect.value;
@@ -58,12 +96,16 @@ form.addEventListener("submit", async (e) => {
     mensaje.textContent = "Minutos registrados correctamente.";
     minutosInput.value = "";
 
+    // refrescar circuito
     cargarAlumnos();
 
   } catch (error) {
+
     mensaje.textContent = error.message;
+
   }
 
 });
+
 
 cargarAlumnos();
