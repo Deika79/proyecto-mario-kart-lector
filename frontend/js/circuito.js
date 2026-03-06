@@ -40,23 +40,27 @@ export async function pintarCoches(alumnosBackend) {
 
     switch (alumno.cocheSeleccionado) {
 
-      case "coche1": // rojo
+      case "coche1": // rojo (izquierda del verde)
+        offsetX = -40;
+        offsetY = -35;
+        break;
+
+      case "coche2": // verde (referencia principal)
+        offsetX = -30;
         offsetY = 0;
         break;
 
-      case "coche2": // verde
-        offsetY = 20;
+      case "coche3": // azul (abajo derecha)
+        offsetX = -30;
+        offsetY = 15;
         break;
 
-      case "coche3": // azul
-        offsetY = -20;
+      case "coche4": // amarillo (izquierda del azul)
+        offsetX = -10;
+        offsetY = -55;
         break;
 
-      case "coche4": // amarillo
-        offsetX = 20;
-        break;
-
-    }
+}
 
 alumno.x = puntoActual.x + offsetX;
 alumno.y = puntoActual.y + offsetY;
