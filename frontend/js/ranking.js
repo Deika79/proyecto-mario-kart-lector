@@ -14,13 +14,19 @@ export function pintarRanking(alumnos) {
 
     const li = document.createElement("li");
 
+    // 🏁 Calcular vueltas completas
+    const vueltas = Math.floor(alumno.minutosTotales / 1920);
+
+    // 🏅 Generar medallas
+    const medallas = "🏅".repeat(vueltas);
+
     li.innerHTML = `
       <div class="ranking-izq">
         <span class="ranking-pos">${index + 1}</span>
         <img class="ranking-coche" src="assets/coches/${alumno.cocheSeleccionado}.png">
         <span class="ranking-nombre">${alumno.nombre}</span>
       </div>
-      <span class="ranking-min">${alumno.minutosTotales} min</span>
+      <span class="ranking-min">${medallas} ${alumno.minutosTotales} min</span>
     `;
 
     lista.appendChild(li);
