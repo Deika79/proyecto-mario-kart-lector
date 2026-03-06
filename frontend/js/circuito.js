@@ -1,18 +1,17 @@
 // /js/circuito.js
 import { circuito1 } from "./data/circuito1.js";
 
-const MINUTOS_VUELTA = 1920; // 32 horas x 60
+const MINUTOS_VUELTA = 1920;
 const TAMANO_COCHE = 40;
 const OFFSET_Y = 10;
 
-export async function pintarCoches(alumnosBackend) {
+export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
 
   const contenedor = document.getElementById('coches-container');
   if (!contenedor) return;
 
   contenedor.innerHTML = '';
 
-  // 🔥 Ahora SOLO usamos lo que venga del backend
   const alumnos = alumnosBackend || [];
 
   if (!alumnos.length) {
@@ -25,14 +24,12 @@ export async function pintarCoches(alumnosBackend) {
 
   alumnos.forEach(alumno => {
 
-    // Seguridad por si algún campo viene mal
     if (!alumno.minutosTotales) alumno.minutosTotales = 0;
 
     const progreso = alumno.minutosTotales % MINUTOS_VUELTA;
     const casilla = Math.floor(progreso / minutosPorCasilla);
     alumno.casilla = Math.min(casilla, totalCasillas - 1);
 
-    // 🔥 ASIGNAMOS POSICIÓN 
     const puntoActual = circuito1[alumno.casilla];
 
     let offsetX = 0;
@@ -40,32 +37,31 @@ export async function pintarCoches(alumnosBackend) {
 
     switch (alumno.cocheSeleccionado) {
 
-      case "coche1": // rojo (izquierda del verde)
+      case "coche1":
         offsetX = -40;
         offsetY = -35;
         break;
 
-      case "coche2": // verde (referencia principal)
+      case "coche2":
         offsetX = -30;
         offsetY = 0;
         break;
 
-      case "coche3": // azul (abajo derecha)
+      case "coche3":
         offsetX = -30;
         offsetY = 15;
         break;
 
-      case "coche4": // amarillo (izquierda del azul)
+      case "coche4":
         offsetX = -10;
         offsetY = -55;
         break;
 
-}
+    }
 
-alumno.x = puntoActual.x + offsetX;
-alumno.y = puntoActual.y + offsetY;
+    alumno.x = puntoActual.x + offsetX;
+    alumno.y = puntoActual.y + offsetY;
 
-    // Puntos anterior y siguiente para giro suave
     const puntoAnterior = circuito1[
       (alumno.casilla - 1 + totalCasillas) % totalCasillas
     ];
@@ -74,20 +70,18 @@ alumno.y = puntoActual.y + offsetY;
       (alumno.casilla + 1) % totalCasillas
     ];
 
-    // Dirección suavizada
     const dx = puntoSiguiente.x - puntoAnterior.x;
     const dy = puntoSiguiente.y - puntoAnterior.y;
 
     const anguloRad = Math.atan2(dy, dx);
     let anguloDeg = anguloRad * (180 / Math.PI);
 
-    // 🔥 Ajuste porque el coche mira hacia ARRIBA por defecto
     anguloDeg -= 90;
 
     alumno.angulo = anguloDeg;
+
   });
 
-  // Agrupar por casilla (offset si coinciden)
   const agrupados = {};
 
   alumnos.forEach(p => {
@@ -101,14 +95,18 @@ alumno.y = puntoActual.y + offsetY;
     });
   });
 
-  // Pintar coches
   alumnos.forEach(alumno => {
 
     const img = document.createElement('img');
     img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
     img.classList.add('coche');
-    img.alt = alumno.nombre;
 
+    // ⭐ Si es el hijo → añadir brillo
+    if (modoPadre && alumno._id === hijoId) {
+      img.classList.add('coche-hijo');
+    }
+
+    img.alt = alumno.nombre;
     img.width = TAMANO_COCHE;
     img.height = TAMANO_COCHE;
 
@@ -122,14 +120,21 @@ alumno.y = puntoActual.y + offsetY;
 
     contenedor.appendChild(img);
 
-    // Nombre encima
     const label = document.createElement('div');
-    label.textContent = alumno.nombre;
+
+    if (!modoPadre || alumno._id === hijoId) {
+      label.textContent = alumno.nombre;
+    } else {
+      label.textContent = "";
+    }
+
     label.classList.add('nombre-coches');
     label.style.position = "absolute";
     label.style.left = alumno.x + 'px';
     label.style.top = (alumno.y - 20) + 'px';
 
     contenedor.appendChild(label);
+
   });
+
 }

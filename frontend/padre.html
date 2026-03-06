@@ -7,10 +7,12 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
   <h1>Padre - Añadir Minutos</h1>
 
   <div class="form-container">
     <form id="registroForm">
+
       <label for="alumnoId">Alumno:</label>
       <select id="alumnoId" required></select>
 
@@ -19,11 +21,20 @@
 
       <button type="submit">Registrar Minutos</button>
       <button type="button" id="logoutBtn">Cerrar sesión</button>
+
     </form>
   </div>
 
   <div id="mensaje"></div>
 
+  <h2 style="margin-top:40px;"></h2>
+
+  <div id="circuito-container">
+    <img src="assets/circuitos/circuito1.png" alt="Circuito" id="circuito">
+    <div id="coches-container"></div>
+  </div>
+
   <script type="module" src="js/padre.js"></script>
+
 </body>
 </html>

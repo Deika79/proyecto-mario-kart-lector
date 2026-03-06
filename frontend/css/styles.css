@@ -295,3 +295,10 @@ select:focus {
   }
 
 }
+/* COCHE DEL HIJO (modo padre) */
+
+.coche-hijo {
+  filter: drop-shadow(0 0 6px gold)
+          drop-shadow(0 0 12px gold)
+          drop-shadow(0 0 20px orange);
+}

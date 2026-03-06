@@ -1,4 +1,5 @@
 import { obtenerAlumnos, registrarMinutos } from './api.js';
+import { pintarCoches } from './circuito.js';
 
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
@@ -13,15 +14,14 @@ const mensaje = document.getElementById('mensaje');
 const minutosInput = document.getElementById('minutos');
 const logoutBtn = document.getElementById("logoutBtn");
 
-// Logout
 logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("token");
   localStorage.removeItem("rol");
   window.location.href = "index.html";
 });
 
-// Cargar alumnos (solo traerá el suyo)
 async function cargarAlumnos() {
+
   const alumnos = await obtenerAlumnos();
 
   alumnoSelect.innerHTML = '';
@@ -32,9 +32,14 @@ async function cargarAlumnos() {
     option.textContent = alumno.nombre;
     alumnoSelect.appendChild(option);
   });
+
+  if (alumnos.length > 0) {
+    const hijoId = alumnos[0]._id;
+    pintarCoches(alumnos, true, hijoId);
+  }
+
 }
 
-// Enviar formulario
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -47,15 +52,18 @@ form.addEventListener("submit", async (e) => {
   }
 
   try {
+
     await registrarMinutos(alumnoId, minutos);
 
     mensaje.textContent = "Minutos registrados correctamente.";
     minutosInput.value = "";
 
+    cargarAlumnos();
+
   } catch (error) {
     mensaje.textContent = error.message;
   }
+
 });
 
-// Inicializar
 cargarAlumnos();
