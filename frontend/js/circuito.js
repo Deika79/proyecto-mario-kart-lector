@@ -35,26 +35,48 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     let offsetX = 0;
     let offsetY = 0;
 
+    // 🏁 PARRILLA 8 COCHES (4 filas)
+
     switch (alumno.cocheSeleccionado) {
 
       case "coche1":
-        offsetX = -40;
-        offsetY = -35;
+        offsetX = -45;
+        offsetY = -60;
         break;
 
       case "coche2":
-        offsetX = -30;
-        offsetY = 0;
+        offsetX = -20;
+        offsetY = -60;
         break;
 
       case "coche3":
-        offsetX = -30;
-        offsetY = 15;
+        offsetX = -45;
+        offsetY = -30;
         break;
 
       case "coche4":
-        offsetX = -10;
-        offsetY = -55;
+        offsetX = -20;
+        offsetY = -30;
+        break;
+
+      case "coche5":
+        offsetX = -45;
+        offsetY = 0;
+        break;
+
+      case "coche6":
+        offsetX = -20;
+        offsetY = 0;
+        break;
+
+      case "coche7":
+        offsetX = -45;
+        offsetY = 30;
+        break;
+
+      case "coche8":
+        offsetX = -20;
+        offsetY = 30;
         break;
 
     }
@@ -101,7 +123,6 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
     img.classList.add('coche');
 
-    // ⭐ Si es el hijo → añadir brillo
     if (modoPadre && alumno._id === hijoId) {
       img.classList.add('coche-hijo');
     }
@@ -115,8 +136,6 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     img.style.top = alumno.y + 'px';
     img.style.transform = `rotate(${alumno.angulo}deg)`;
     img.style.transformOrigin = "center center";
-    img.style.transition =
-      "left 0.4s linear, top 0.4s linear, transform 0.6s ease-out";
 
     contenedor.appendChild(img);
 
@@ -124,8 +143,6 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
 
     if (!modoPadre || alumno._id === hijoId) {
       label.textContent = alumno.nombre;
-    } else {
-      label.textContent = "";
     }
 
     label.classList.add('nombre-coches');
