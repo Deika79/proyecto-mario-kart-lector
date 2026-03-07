@@ -1,4 +1,4 @@
-import { obtenerAlumnos, crearAlumno, resetClase, crearPadre, obtenerUsuarios } from './api.js';
+import { obtenerAlumnos, crearAlumno, resetClase, crearPadre, obtenerUsuarios } from './api.js'
 
 /* =========================
    GENERAR PASSWORD
@@ -21,6 +21,15 @@ if (!token || rol !== "profesor") {
 }
 
 /* =========================
+   API BASE
+========================= */
+
+const API_URL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : "https://mario-kart-lector-backend.onrender.com/api";
+
+/* =========================
    ELEMENTOS DOM
 ========================= */
 
@@ -41,6 +50,30 @@ const passwordTexto = document.getElementById("passwordGenerada");
 document.getElementById("volverBtn").onclick = () => {
   window.location.href = "profesor.html";
 };
+
+/* =========================
+   AÑADIR MINUTOS MANUAL (PROFESOR)
+========================= */
+
+async function añadirMinutosProfesor(alumnoId, minutos) {
+
+  const res = await fetch(`${API_URL}/registros/manual`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({ alumnoId, minutos })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error añadiendo minutos");
+  }
+
+  return data;
+}
 
 /* =========================
    CARGAR ALUMNOS
@@ -66,7 +99,8 @@ async function cargarAlumnos() {
     const li = document.createElement("li");
 
     li.innerHTML = `
-      <strong>${alumno.nombre}</strong> — ${alumno.minutosTotales} min
+      <strong>${alumno.nombre}</strong> — ${alumno.minutosTotales} min 
+      <button class="sumarMinutosBtn" data-id="${alumno._id}">➕</button>
       <br>
       <small>${estadoPadre}</small>
       <br>
@@ -79,6 +113,47 @@ async function cargarAlumnos() {
     lista.appendChild(li);
 
   });
+
+  /* =========================
+     BOTÓN SUMAR MINUTOS
+  ========================= */
+
+  document.querySelectorAll(".sumarMinutosBtn").forEach(btn => {
+
+    btn.addEventListener("click", async () => {
+
+      const alumnoId = btn.dataset.id;
+
+      const minutos = prompt("¿Cuántos minutos quieres añadir?");
+
+      if (!minutos) return;
+
+      const numero = Number(minutos);
+
+      if (isNaN(numero) || numero <= 0) {
+        alert("Introduce un número válido");
+        return;
+      }
+
+      try {
+
+        await añadirMinutosProfesor(alumnoId, numero);
+
+        cargarAlumnos();
+
+      } catch (error) {
+
+        alert(error.message);
+
+      }
+
+    });
+
+  });
+
+  /* =========================
+     BOTÓN CREAR PADRE
+  ========================= */
 
   document.querySelectorAll(".crearPadreBtn").forEach(btn => {
 
