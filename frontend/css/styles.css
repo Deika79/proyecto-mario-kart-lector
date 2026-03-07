@@ -302,3 +302,13 @@ select:focus {
           drop-shadow(0 0 12px gold)
           drop-shadow(0 0 20px orange);
 }
+.password-container {
+  position: relative;
+}
+
+#togglePassword {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}

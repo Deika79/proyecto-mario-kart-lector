@@ -6,13 +6,39 @@ despertarBackend();
 const form = document.getElementById("loginForm");
 const errorMensaje = document.getElementById("errorMensaje");
 
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+
+/* 👁️ Mostrar / ocultar contraseña */
+
+if (togglePassword) {
+
+  togglePassword.addEventListener("click", () => {
+
+    const tipo =
+      passwordInput.getAttribute("type") === "password"
+        ? "text"
+        : "password";
+
+    passwordInput.setAttribute("type", tipo);
+
+    togglePassword.textContent = tipo === "password" ? "👁️" : "🙈";
+
+  });
+
+}
+
+
+/* LOGIN */
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const password = passwordInput.value;
 
   try {
+
     const data = await login(email, password);
 
     // Guardar token y rol
@@ -27,6 +53,9 @@ form.addEventListener("submit", async (e) => {
     }
 
   } catch (error) {
+
     errorMensaje.textContent = error.message;
+
   }
+
 });
