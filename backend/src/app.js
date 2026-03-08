@@ -6,6 +6,13 @@ import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 
+/* ===== PING PARA MANTENER VIVO EL SERVIDOR ===== */
+/* Endpoint ultraligero (NO usa MongoDB) */
+
+app.get('/ping', (req, res) => {
+  res.status(200).send('OK');
+});
+
 /* ===== CORS ===== */
 
 const allowedOrigins = [

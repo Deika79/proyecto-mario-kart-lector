@@ -6,14 +6,26 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
+
+    /* =========================
+       CONEXIÓN A MONGODB
+       ========================= */
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log('🍃 MongoDB Atlas conectado correctamente');
+
+
+    /* =========================
+       ARRANQUE DEL SERVIDOR
+       ========================= */
 
     app.listen(PORT, () => {
       console.log(`🚀 Servidor escuchando en puerto ${PORT}`);
     });
+
   } catch (error) {
     console.error('💥 ERROR ARRANCANDO SERVIDOR:', error);
+    process.exit(1);
   }
 };
 
