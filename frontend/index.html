@@ -40,5 +40,18 @@
 
   <script type="module" src="js/auth.js"></script>
 
+  <!-- Despertar backend al cargar la página -->
+  <script>
+    async function wakeBackend() {
+      try {
+        await fetch("https://mario-kart-lector-backend.onrender.com/ping");
+      } catch (e) {
+        console.log("Backend despertando...");
+      }
+    }
+
+    wakeBackend();
+  </script>
+
 </body>
 </html>

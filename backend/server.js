@@ -12,6 +12,7 @@ const startServer = async () => {
        ========================= */
 
     await mongoose.connect(process.env.MONGO_URI);
+
     console.log('🍃 MongoDB Atlas conectado correctamente');
 
 
@@ -19,13 +20,25 @@ const startServer = async () => {
        ARRANQUE DEL SERVIDOR
        ========================= */
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`🚀 Servidor escuchando en puerto ${PORT}`);
+
+      /* =========================
+         PRECALENTAR RUTAS
+         ========================= */
+
+      try {
+        fetch(`http://localhost:${PORT}/ping`)
+          .then(() => console.log("🔥 Backend precalentado"))
+          .catch(() => {});
+      } catch (e) {}
     });
 
   } catch (error) {
+
     console.error('💥 ERROR ARRANCANDO SERVIDOR:', error);
     process.exit(1);
+
   }
 };
 
