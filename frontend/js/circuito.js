@@ -8,7 +8,9 @@ const OFFSET_Y = 10;
 export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
 
   const contenedor = document.getElementById('coches-container');
-  if (!contenedor) return;
+  const circuitoImg = document.getElementById('circuito');
+
+  if (!contenedor || !circuitoImg) return;
 
   contenedor.innerHTML = '';
 
@@ -21,6 +23,9 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
 
   const totalCasillas = circuito1.length;
   const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
+
+  const anchoCircuito = circuitoImg.clientWidth;
+  const altoCircuito = circuitoImg.clientHeight;
 
   alumnos.forEach(alumno => {
 
@@ -131,9 +136,13 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     img.width = TAMANO_COCHE;
     img.height = TAMANO_COCHE;
 
+    // ⭐ POSICIÓN RESPONSIVE
+    const leftPercent = (alumno.x / anchoCircuito) * 100;
+    const topPercent = (alumno.y / altoCircuito) * 100;
+
     img.style.position = "absolute";
-    img.style.left = alumno.x + 'px';
-    img.style.top = alumno.y + 'px';
+    img.style.left = leftPercent + "%";
+    img.style.top = topPercent + "%";
     img.style.transform = `rotate(${alumno.angulo}deg)`;
     img.style.transformOrigin = "center center";
 
@@ -147,8 +156,8 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
 
     label.classList.add('nombre-coches');
     label.style.position = "absolute";
-    label.style.left = alumno.x + 'px';
-    label.style.top = (alumno.y - 20) + 'px';
+    label.style.left = leftPercent + "%";
+    label.style.top = (topPercent - 3) + "%";
 
     contenedor.appendChild(label);
 
