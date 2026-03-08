@@ -229,6 +229,27 @@ select:focus {
   font-weight: bold;
 }
 
+/* ===== PODIO MARIO KART ===== */
+
+.ranking-lista li:nth-child(1) {
+  background: linear-gradient(145deg, gold, #ffd700);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px gold;
+  font-size: 18px;
+}
+
+.ranking-lista li:nth-child(2) {
+  background: linear-gradient(145deg, silver, #e3e3e3);
+  transform: scale(1.03);
+  box-shadow: 0 0 15px silver;
+}
+
+.ranking-lista li:nth-child(3) {
+  background: linear-gradient(145deg, #cd7f32, #b87333);
+  transform: scale(1.02);
+  box-shadow: 0 0 10px #cd7f32;
+}
+
 .ranking-izq {
   display: flex;
   align-items: center;
@@ -255,18 +276,19 @@ select:focus {
   color: #444;
 }
 
-/* ===== PODIO ===== */
+/* ===== MARCAR HIJO EN RANKING ===== */
 
-.ranking-lista li:nth-child(1) {
-  background: linear-gradient(145deg, gold, #ffd700);
+.ranking-hijo {
+  border: 3px solid gold;
+  background: linear-gradient(145deg, #fff8dc, #ffeaa7);
+  box-shadow: 0 0 15px gold;
 }
 
-.ranking-lista li:nth-child(2) {
-  background: linear-gradient(145deg, silver, #e3e3e3);
-}
-
-.ranking-lista li:nth-child(3) {
-  background: linear-gradient(145deg, #cd7f32, #b87333);
+.ranking-hijo .ranking-nombre::after {
+  content: " ⭐ TU HIJO";
+  font-size: 12px;
+  color: #ff8c00;
+  margin-left: 6px;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -316,4 +338,8 @@ select:focus {
   right: 10px;
   top: 10px;
   cursor: pointer;
+}
+.panel-ranking {
+  max-width: 600px;
+  margin: 40px auto;
 }

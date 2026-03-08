@@ -6,6 +6,7 @@
   <title>Padre - Mario Kart Lector</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
 
   <h1>Padre - Añadir Minutos</h1>
@@ -27,11 +28,23 @@
 
   <div id="mensaje"></div>
 
-  <h2 style="margin-top:40px;"></h2>
+  <!-- CIRCUITO -->
+
+  <h2 style="margin-top:40px;">🏁 Carrera de lectura</h2>
 
   <div id="circuito-container">
     <img src="assets/circuitos/circuito1.png" alt="Circuito" id="circuito">
     <div id="coches-container"></div>
+  </div>
+
+  <!-- RANKING -->
+
+  <div class="panel panel-ranking" style="margin-top:40px; max-width:600px;">
+
+    <h2>🏆 Ranking de lectura</h2>
+
+    <ol id="rankingLista" class="ranking-lista"></ol>
+
   </div>
 
   <script type="module" src="js/padre.js"></script>

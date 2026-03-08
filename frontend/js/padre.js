@@ -1,5 +1,6 @@
 import { obtenerAlumnos, registrarMinutos } from './api.js';
 import { pintarCoches } from './circuito.js';
+import { pintarRanking } from './ranking.js';
 
 const API_URL =
   window.location.hostname === "localhost"
@@ -69,7 +70,11 @@ async function cargarAlumnos() {
   // Este endpoint devuelve TODOS para el circuito
   const alumnosCircuito = await obtenerAlumnosCircuito();
 
+  // Pintar circuito
   pintarCoches(alumnosCircuito, true, hijoId);
+
+  // ⭐ Pintar ranking (ocultando nombres de otros)
+  pintarRanking(alumnosCircuito, true, hijoId);
 
 }
 
@@ -96,7 +101,7 @@ form.addEventListener("submit", async (e) => {
     mensaje.textContent = "Minutos registrados correctamente.";
     minutosInput.value = "";
 
-    // refrescar circuito
+    // refrescar circuito y ranking
     cargarAlumnos();
 
   } catch (error) {
@@ -106,6 +111,5 @@ form.addEventListener("submit", async (e) => {
   }
 
 });
-
 
 cargarAlumnos();

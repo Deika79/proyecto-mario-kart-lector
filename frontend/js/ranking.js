@@ -1,4 +1,4 @@
-export function pintarRanking(alumnos) {
+export function pintarRanking(alumnos, modoPadre = false, hijoId = null) {
 
   const lista = document.getElementById("rankingLista");
 
@@ -20,11 +20,18 @@ export function pintarRanking(alumnos) {
     // 🏅 Generar medallas
     const medallas = "🏅".repeat(vueltas);
 
+    // ⭐ ocultar nombres si es modo padre
+    let nombreMostrar = alumno.nombre;
+
+    if (modoPadre && alumno._id !== hijoId) {
+      nombreMostrar = "Alumno";
+    }
+
     li.innerHTML = `
       <div class="ranking-izq">
         <span class="ranking-pos">${index + 1}</span>
         <img class="ranking-coche" src="assets/coches/${alumno.cocheSeleccionado}.png">
-        <span class="ranking-nombre">${alumno.nombre}</span>
+        <span class="ranking-nombre">${nombreMostrar}</span>
       </div>
       <span class="ranking-min">${medallas} ${alumno.minutosTotales} min</span>
     `;
