@@ -5,12 +5,20 @@ const MINUTOS_VUELTA = 1920;
 const TAMANO_COCHE = 40;
 const OFFSET_Y = 10;
 
+let ultimoEstado = null;
+
 export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
 
   const contenedor = document.getElementById('coches-container');
   const circuitoImg = document.getElementById('circuito');
 
   if (!contenedor || !circuitoImg) return;
+
+  // 🟢 Esperar a que cargue la imagen en móvil
+  if (!circuitoImg.complete) {
+    circuitoImg.onload = () => pintarCoches(alumnosBackend, modoPadre, hijoId);
+    return;
+  }
 
   contenedor.innerHTML = '';
 
@@ -21,11 +29,15 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     return;
   }
 
+  // Guardar estado para recalcular en resize
+  ultimoEstado = { alumnosBackend, modoPadre, hijoId };
+
   const totalCasillas = circuito1.length;
   const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
 
-  const anchoCircuito = circuitoImg.clientWidth;
-  const altoCircuito = circuitoImg.clientHeight;
+  // 🟢 Más fiable en móvil
+  const anchoCircuito = circuitoImg.offsetWidth;
+  const altoCircuito = circuitoImg.offsetHeight;
 
   alumnos.forEach(alumno => {
 
@@ -40,7 +52,7 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     let offsetX = 0;
     let offsetY = 0;
 
-    // 🏁 SOLO aplicar parrilla en la salida
+    // 🏁 Parrilla solo en salida
     if (alumno.casilla === 0) {
 
       switch (alumno.cocheSeleccionado) {
@@ -139,7 +151,6 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     img.width = TAMANO_COCHE;
     img.height = TAMANO_COCHE;
 
-    // ⭐ POSICIÓN RESPONSIVE
     const leftPercent = (alumno.x / anchoCircuito) * 100;
     const topPercent = (alumno.y / altoCircuito) * 100;
 
@@ -167,3 +178,16 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
   });
 
 }
+
+// 🟢 Recalcular posiciones si cambia el tamaño (móvil rotado)
+window.addEventListener("resize", () => {
+
+  if (!ultimoEstado) return;
+
+  pintarCoches(
+    ultimoEstado.alumnosBackend,
+    ultimoEstado.modoPadre,
+    ultimoEstado.hijoId
+  );
+
+});
