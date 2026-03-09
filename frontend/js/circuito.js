@@ -40,49 +40,52 @@ export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = n
     let offsetX = 0;
     let offsetY = 0;
 
-    // 🏁 PARRILLA 8 COCHES (4 filas)
+    // 🏁 SOLO aplicar parrilla en la salida
+    if (alumno.casilla === 0) {
 
-    switch (alumno.cocheSeleccionado) {
+      switch (alumno.cocheSeleccionado) {
 
-      case "coche1":
-        offsetX = -45;
-        offsetY = -60;
-        break;
+        case "coche1":
+          offsetX = -45;
+          offsetY = -60;
+          break;
 
-      case "coche2":
-        offsetX = -20;
-        offsetY = -60;
-        break;
+        case "coche2":
+          offsetX = -20;
+          offsetY = -60;
+          break;
 
-      case "coche3":
-        offsetX = -45;
-        offsetY = -30;
-        break;
+        case "coche3":
+          offsetX = -45;
+          offsetY = -30;
+          break;
 
-      case "coche4":
-        offsetX = -20;
-        offsetY = -30;
-        break;
+        case "coche4":
+          offsetX = -20;
+          offsetY = -30;
+          break;
 
-      case "coche5":
-        offsetX = -45;
-        offsetY = 0;
-        break;
+        case "coche5":
+          offsetX = -45;
+          offsetY = 0;
+          break;
 
-      case "coche6":
-        offsetX = -20;
-        offsetY = 0;
-        break;
+        case "coche6":
+          offsetX = -20;
+          offsetY = 0;
+          break;
 
-      case "coche7":
-        offsetX = -45;
-        offsetY = 30;
-        break;
+        case "coche7":
+          offsetX = -45;
+          offsetY = 30;
+          break;
 
-      case "coche8":
-        offsetX = -20;
-        offsetY = 30;
-        break;
+        case "coche8":
+          offsetX = -20;
+          offsetY = 30;
+          break;
+
+      }
 
     }
 
