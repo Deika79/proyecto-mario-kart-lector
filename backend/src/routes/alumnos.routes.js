@@ -29,7 +29,6 @@ router.post('/', verificarToken, async (req, res) => {
 /**
  * 🔵 NUEVO ENDPOINT
  * Obtener alumnos para el circuito (todos los coches)
- * pero solo datos necesarios
  */
 router.get('/circuito', verificarToken, async (req, res) => {
   try {
@@ -54,32 +53,35 @@ router.get('/', verificarToken, async (req, res) => {
 
     // PROFESOR → ve todos
     if (req.usuario.rol === "profesor") {
+
       const alumnos = await Alumno.find();
       return res.json(alumnos);
+
     }
 
-    // PADRE → solo su hijo
+    // PADRE → puede tener VARIOS hijos
     if (req.usuario.rol === "padre") {
 
       const usuario = await Usuario.findById(req.usuario.id);
 
-      if (!usuario || !usuario.alumnoId) {
+      if (!usuario || !usuario.alumnosIds || usuario.alumnosIds.length === 0) {
         return res.status(404).json({ error: "Alumno no asociado" });
       }
 
-      const alumno = await Alumno.findById(usuario.alumnoId);
+      const alumnos = await Alumno.find({
+        _id: { $in: usuario.alumnosIds }
+      });
 
-      if (!alumno) {
-        return res.status(404).json({ error: "Alumno no encontrado" });
-      }
+      return res.json(alumnos);
 
-      return res.json([alumno]);
     }
 
     return res.status(403).json({ error: "Rol no válido" });
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
 });
 
