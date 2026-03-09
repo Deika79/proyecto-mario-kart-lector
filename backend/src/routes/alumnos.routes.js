@@ -21,16 +21,18 @@ router.post('/', verificarToken, async (req, res) => {
     res.status(201).json(alumno);
 
   } catch (error) {
+
     res.status(400).json({ error: error.message });
+
   }
 });
 
 
 /**
- * 🔵 NUEVO ENDPOINT
  * Obtener alumnos para el circuito (todos los coches)
  */
 router.get('/circuito', verificarToken, async (req, res) => {
+
   try {
 
     const alumnos = await Alumno.find().select(
@@ -40,8 +42,11 @@ router.get('/circuito', verificarToken, async (req, res) => {
     res.json(alumnos);
 
   } catch (error) {
+
     res.status(500).json({ error: error.message });
+
   }
+
 });
 
 
@@ -49,6 +54,7 @@ router.get('/circuito', verificarToken, async (req, res) => {
  * Obtener alumnos según rol
  */
 router.get('/', verificarToken, async (req, res) => {
+
   try {
 
     // PROFESOR → ve todos
@@ -83,6 +89,7 @@ router.get('/', verificarToken, async (req, res) => {
     res.status(500).json({ error: error.message });
 
   }
+
 });
 
 
