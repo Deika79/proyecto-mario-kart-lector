@@ -3,183 +3,154 @@ import { circuito1 } from "./data/circuito1.js";
 
 const MINUTOS_VUELTA = 1920;
 const TAMANO_COCHE = 40;
-const OFFSET_Y = 10;
+
+// separación entre coches en misma casilla
+const OFFSET_STACK = 12;
+
+// tamaño base del circuito (imagen original)
+const BASE_WIDTH = 900;
+const BASE_HEIGHT = 600;
 
 let ultimoEstado = null;
 
-export async function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
+export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
 
-  const contenedor = document.getElementById('coches-container');
-  const circuitoImg = document.getElementById('circuito');
+  const contenedor = document.getElementById("coches-container");
+  const circuitoImg = document.getElementById("circuito");
 
   if (!contenedor || !circuitoImg) return;
 
-  // 🟢 Esperar a que cargue la imagen en móvil
+  // esperar carga de imagen (importante en móvil)
   if (!circuitoImg.complete) {
     circuitoImg.onload = () => pintarCoches(alumnosBackend, modoPadre, hijoId);
     return;
   }
 
-  contenedor.innerHTML = '';
+  contenedor.innerHTML = "";
 
   const alumnos = alumnosBackend || [];
+  if (!alumnos.length) return;
 
-  if (!alumnos.length) {
-    console.warn("No hay alumnos para pintar.");
-    return;
-  }
-
-  // Guardar estado para recalcular en resize
   ultimoEstado = { alumnosBackend, modoPadre, hijoId };
 
   const totalCasillas = circuito1.length;
   const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
 
-  // 🟢 Más fiable en móvil
-  const anchoCircuito = circuitoImg.offsetWidth;
-  const altoCircuito = circuitoImg.offsetHeight;
+  const ancho = circuitoImg.offsetWidth;
+  const alto = circuitoImg.offsetHeight;
+
+  const scaleX = ancho / BASE_WIDTH;
+  const scaleY = alto / BASE_HEIGHT;
+
+  // agrupar coches por casilla (para evitar solapamientos)
+  const agrupados = {};
 
   alumnos.forEach(alumno => {
 
-    if (!alumno.minutosTotales) alumno.minutosTotales = 0;
+    const minutos = alumno.minutosTotales || 0;
 
-    const progreso = alumno.minutosTotales % MINUTOS_VUELTA;
+    const progreso = minutos % MINUTOS_VUELTA;
     const casilla = Math.floor(progreso / minutosPorCasilla);
+
     alumno.casilla = Math.min(casilla, totalCasillas - 1);
 
-    const puntoActual = circuito1[alumno.casilla];
-
-    let offsetX = 0;
-    let offsetY = 0;
-
-    // 🏁 Parrilla solo en salida
-    if (alumno.casilla === 0) {
-
-      switch (alumno.cocheSeleccionado) {
-
-        case "coche1":
-          offsetX = -45;
-          offsetY = -60;
-          break;
-
-        case "coche2":
-          offsetX = -20;
-          offsetY = -60;
-          break;
-
-        case "coche3":
-          offsetX = -45;
-          offsetY = -30;
-          break;
-
-        case "coche4":
-          offsetX = -20;
-          offsetY = -30;
-          break;
-
-        case "coche5":
-          offsetX = -45;
-          offsetY = 0;
-          break;
-
-        case "coche6":
-          offsetX = -20;
-          offsetY = 0;
-          break;
-
-        case "coche7":
-          offsetX = -45;
-          offsetY = 30;
-          break;
-
-        case "coche8":
-          offsetX = -20;
-          offsetY = 30;
-          break;
-
-      }
-
+    if (!agrupados[alumno.casilla]) {
+      agrupados[alumno.casilla] = [];
     }
 
-    alumno.x = puntoActual.x + offsetX;
-    alumno.y = puntoActual.y + offsetY;
+    agrupados[alumno.casilla].push(alumno);
 
-    const puntoAnterior = circuito1[
-      (alumno.casilla - 1 + totalCasillas) % totalCasillas
-    ];
-
-    const puntoSiguiente = circuito1[
-      (alumno.casilla + 1) % totalCasillas
-    ];
-
-    const dx = puntoSiguiente.x - puntoAnterior.x;
-    const dy = puntoSiguiente.y - puntoAnterior.y;
-
-    const anguloRad = Math.atan2(dy, dx);
-    let anguloDeg = anguloRad * (180 / Math.PI);
-
-    anguloDeg -= 90;
-
-    alumno.angulo = anguloDeg;
-
-  });
-
-  const agrupados = {};
-
-  alumnos.forEach(p => {
-    if (!agrupados[p.casilla]) agrupados[p.casilla] = [];
-    agrupados[p.casilla].push(p);
   });
 
   Object.values(agrupados).forEach(grupo => {
-    grupo.forEach((p, index) => {
-      p.y += index * OFFSET_Y;
+
+    grupo.forEach((alumno, index) => {
+
+      const punto = circuito1[alumno.casilla];
+
+      let offsetX = 0;
+      let offsetY = 0;
+
+      // parrilla de salida
+      if (alumno.casilla === 0) {
+
+        const parrilla = {
+          coche1: [-45,-60],
+          coche2: [-20,-60],
+          coche3: [-45,-30],
+          coche4: [-20,-30],
+          coche5: [-45,0],
+          coche6: [-20,0],
+          coche7: [-45,30],
+          coche8: [-20,30]
+        };
+
+        if (parrilla[alumno.cocheSeleccionado]) {
+          offsetX = parrilla[alumno.cocheSeleccionado][0];
+          offsetY = parrilla[alumno.cocheSeleccionado][1];
+        }
+
+      }
+
+      // evitar solapamientos
+      offsetY += index * OFFSET_STACK;
+
+      const x = (punto.x + offsetX) * scaleX;
+      const y = (punto.y + offsetY) * scaleY;
+
+      const puntoAnterior =
+        circuito1[(alumno.casilla - 1 + totalCasillas) % totalCasillas];
+
+      const puntoSiguiente =
+        circuito1[(alumno.casilla + 1) % totalCasillas];
+
+      const dx = puntoSiguiente.x - puntoAnterior.x;
+      const dy = puntoSiguiente.y - puntoAnterior.y;
+
+      let angulo = Math.atan2(dy, dx) * (180 / Math.PI);
+      angulo -= 90;
+
+      const left = (x / ancho) * 100;
+      const top = (y / alto) * 100;
+
+      const img = document.createElement("img");
+      img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
+      img.classList.add("coche");
+
+      if (modoPadre && alumno._id === hijoId) {
+        img.classList.add("coche-hijo");
+      }
+
+      img.width = TAMANO_COCHE;
+      img.height = TAMANO_COCHE;
+
+      img.style.position = "absolute";
+      img.style.left = left + "%";
+      img.style.top = top + "%";
+      img.style.transform = `rotate(${angulo}deg)`;
+
+      contenedor.appendChild(img);
+
+      const label = document.createElement("div");
+
+      if (!modoPadre || alumno._id === hijoId) {
+        label.textContent = alumno.nombre;
+      }
+
+      label.classList.add("nombre-coches");
+      label.style.position = "absolute";
+      label.style.left = left + "%";
+      label.style.top = (top - 3) + "%";
+
+      contenedor.appendChild(label);
+
     });
-  });
-
-  alumnos.forEach(alumno => {
-
-    const img = document.createElement('img');
-    img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
-    img.classList.add('coche');
-
-    if (modoPadre && alumno._id === hijoId) {
-      img.classList.add('coche-hijo');
-    }
-
-    img.alt = alumno.nombre;
-    img.width = TAMANO_COCHE;
-    img.height = TAMANO_COCHE;
-
-    const leftPercent = (alumno.x / anchoCircuito) * 100;
-    const topPercent = (alumno.y / altoCircuito) * 100;
-
-    img.style.position = "absolute";
-    img.style.left = leftPercent + "%";
-    img.style.top = topPercent + "%";
-    img.style.transform = `rotate(${alumno.angulo}deg)`;
-    img.style.transformOrigin = "center center";
-
-    contenedor.appendChild(img);
-
-    const label = document.createElement('div');
-
-    if (!modoPadre || alumno._id === hijoId) {
-      label.textContent = alumno.nombre;
-    }
-
-    label.classList.add('nombre-coches');
-    label.style.position = "absolute";
-    label.style.left = leftPercent + "%";
-    label.style.top = (topPercent - 3) + "%";
-
-    contenedor.appendChild(label);
 
   });
 
 }
 
-// 🟢 Recalcular posiciones si cambia el tamaño (móvil rotado)
+// recalcular posiciones si cambia tamaño (rotación móvil)
 window.addEventListener("resize", () => {
 
   if (!ultimoEstado) return;

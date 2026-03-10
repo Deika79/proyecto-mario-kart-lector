@@ -124,4 +124,10 @@ form.addEventListener("submit", async (e) => {
 });
 
 
-cargarAlumnos();
+const circuitoImg = document.getElementById("circuito");
+
+if (circuitoImg.complete) {
+  cargarAlumnos();
+} else {
+  circuitoImg.onload = cargarAlumnos;
+}
