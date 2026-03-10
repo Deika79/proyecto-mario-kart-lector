@@ -3,13 +3,7 @@ import { circuito1 } from "./data/circuito1.js";
 
 const MINUTOS_VUELTA = 1920;
 const TAMANO_COCHE = 40;
-
-// separación entre coches en misma casilla
 const OFFSET_STACK = 12;
-
-// tamaño base del circuito (imagen original)
-const BASE_WIDTH = 900;
-const BASE_HEIGHT = 600;
 
 let ultimoEstado = null;
 
@@ -20,7 +14,7 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
 
   if (!contenedor || !circuitoImg) return;
 
-  // esperar carga de imagen (importante en móvil)
+  // esperar a que cargue la imagen (clave para móvil)
   if (!circuitoImg.complete) {
     circuitoImg.onload = () => pintarCoches(alumnosBackend, modoPadre, hijoId);
     return;
@@ -39,10 +33,6 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
   const ancho = circuitoImg.offsetWidth;
   const alto = circuitoImg.offsetHeight;
 
-  const scaleX = ancho / BASE_WIDTH;
-  const scaleY = alto / BASE_HEIGHT;
-
-  // agrupar coches por casilla (para evitar solapamientos)
   const agrupados = {};
 
   alumnos.forEach(alumno => {
@@ -95,8 +85,8 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
       // evitar solapamientos
       offsetY += index * OFFSET_STACK;
 
-      const x = (punto.x + offsetX) * scaleX;
-      const y = (punto.y + offsetY) * scaleY;
+      const x = punto.x + offsetX;
+      const y = punto.y + offsetY;
 
       const puntoAnterior =
         circuito1[(alumno.casilla - 1 + totalCasillas) % totalCasillas];
