@@ -1,26 +1,15 @@
 const CACHE_NAME = "mario-kart-lector-v1";
 
-const urlsToCache = [
-  "/",
-  "/index.html",
-  "/padre.html",
-  "/profesor.html",
-  "/alumnos.html",
-  "/css/styles.css"
-];
-
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
-    })
-  );
+  console.log("Service Worker instalado");
 });
 
 self.addEventListener("fetch", event => {
+
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request).catch(() => caches.match(event.request))
   );
+
 });
