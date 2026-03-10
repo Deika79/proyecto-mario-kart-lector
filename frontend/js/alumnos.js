@@ -89,7 +89,10 @@ async function cargarAlumnos() {
   alumnos.forEach(alumno => {
 
     const padreExiste = usuarios.some(
-      u => u.rol === "padre" && u.alumnoId === alumno._id
+      u =>
+        u.rol === "padre" &&
+        u.alumnosIds &&
+        u.alumnosIds.includes(alumno._id)
     );
 
     const estadoPadre = padreExiste
