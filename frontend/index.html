@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Mario Kart Lector - Login</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="css/styles.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff512f">
+
 </head>
+
 <body>
 
   <div class="login-container">
@@ -15,19 +25,27 @@
     <form id="loginForm">
 
       <label for="email">Email</label>
-      <input type="email" id="email" placeholder="Introduce tu email" required>
+      <input
+        type="email"
+        id="email"
+        placeholder="Introduce tu email"
+        required
+      >
 
       <label for="password">Contraseña</label>
 
-      <!-- Contenedor para contraseña + icono -->
+      <!-- Contenedor contraseña + icono -->
       <div class="password-container">
-        <input 
-          type="password" 
-          id="password" 
-          placeholder="Introduce tu contraseña" 
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Introduce tu contraseña"
           required
         >
+
         <span id="togglePassword">👁️</span>
+
       </div>
 
       <button type="submit">Entrar</button>
@@ -38,9 +56,12 @@
 
   </div>
 
+
+  <!-- JS LOGIN -->
   <script type="module" src="js/auth.js"></script>
 
-  <!-- Despertar backend al cargar la página -->
+
+  <!-- Despertar backend -->
   <script>
     async function wakeBackend() {
       try {
@@ -52,6 +73,26 @@
 
     wakeBackend();
   </script>
+
+
+  <!-- REGISTRAR SERVICE WORKER (PWA) -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(() => {
+            console.log("Service Worker registrado");
+          })
+          .catch(err => {
+            console.log("Error registrando SW:", err);
+          });
+
+      });
+    }
+  </script>
+
 
 </body>
 </html>
