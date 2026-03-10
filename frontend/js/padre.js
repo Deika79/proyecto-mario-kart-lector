@@ -26,6 +26,7 @@ logoutBtn.addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
+
 /**
  * Obtener alumnos para el circuito (todos)
  */
@@ -51,29 +52,40 @@ async function obtenerAlumnosCircuito() {
  */
 async function cargarAlumnos() {
 
-  // Este endpoint devuelve solo su hijo
   const alumnosPadre = await obtenerAlumnos();
+
+  if (!alumnosPadre || alumnosPadre.length === 0) {
+    console.warn("El padre no tiene alumnos asociados");
+    return;
+  }
 
   alumnoSelect.innerHTML = '';
 
   alumnosPadre.forEach(alumno => {
+
     const option = document.createElement('option');
     option.value = alumno._id;
     option.textContent = alumno.nombre;
+
     alumnoSelect.appendChild(option);
+
   });
 
-  if (alumnosPadre.length === 0) return;
-
+  // Primer hijo seleccionado
   const hijoId = alumnosPadre[0]._id;
 
-  // Este endpoint devuelve TODOS para el circuito
+  // Obtener todos los alumnos para circuito y ranking
   const alumnosCircuito = await obtenerAlumnosCircuito();
+
+  if (!alumnosCircuito || alumnosCircuito.length === 0) {
+    console.warn("No hay alumnos para pintar circuito");
+    return;
+  }
 
   // Pintar circuito
   pintarCoches(alumnosCircuito, true, hijoId);
 
-  // ⭐ Pintar ranking (ocultando nombres de otros)
+  // Pintar ranking
   pintarRanking(alumnosCircuito, true, hijoId);
 
 }
@@ -101,7 +113,6 @@ form.addEventListener("submit", async (e) => {
     mensaje.textContent = "Minutos registrados correctamente.";
     minutosInput.value = "";
 
-    // refrescar circuito y ranking
     cargarAlumnos();
 
   } catch (error) {
@@ -111,5 +122,6 @@ form.addEventListener("submit", async (e) => {
   }
 
 });
+
 
 cargarAlumnos();
