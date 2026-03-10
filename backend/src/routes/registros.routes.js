@@ -16,6 +16,7 @@ const LIMITE_DIARIO = 30;
  */
 router.post('/', verificarToken, async (req, res) => {
   try {
+
     const { alumnoId } = req.body;
     const minutos = Number(req.body.minutos);
 
@@ -28,20 +29,25 @@ router.post('/', verificarToken, async (req, res) => {
     }
 
     const alumno = await Alumno.findById(alumnoId);
+
     if (!alumno) {
       return res.status(404).json({ error: 'Alumno no encontrado' });
     }
 
-    // 🔐 CONTROL POR ROL
+    // 🔐 CONTROL POR ROL (padres con varios hijos)
     if (req.usuario.rol === "padre") {
 
       const usuario = await Usuario.findById(req.usuario.id);
 
-      if (!usuario || !usuario.alumnoId) {
+      if (!usuario || !usuario.alumnosIds || usuario.alumnosIds.length === 0) {
         return res.status(403).json({ error: 'No autorizado' });
       }
 
-      if (usuario.alumnoId.toString() !== alumnoId) {
+      const permitido = usuario.alumnosIds.some(
+        id => id.toString() === alumnoId
+      );
+
+      if (!permitido) {
         return res.status(403).json({
           error: 'No puedes registrar minutos a este alumno'
         });
@@ -72,6 +78,7 @@ router.post('/', verificarToken, async (req, res) => {
       });
     }
 
+    // Crear registro
     await RegistroMinutos.create({
       alumnoId,
       minutos,
@@ -103,7 +110,9 @@ router.post('/manual', verificarToken, async (req, res) => {
   try {
 
     if (req.usuario.rol !== "profesor") {
-      return res.status(403).json({ error: "Solo el profesor puede añadir minutos manualmente" });
+      return res.status(403).json({
+        error: "Solo el profesor puede añadir minutos manualmente"
+      });
     }
 
     const { alumnoId } = req.body;
