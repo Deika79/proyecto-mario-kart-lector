@@ -82,8 +82,7 @@ async function cargarAlumnos() {
     return;
   }
 
-  // Pintar circuito
-  pintarCoches(alumnosCircuito, true, hijoId);
+
 
   // Pintar ranking
   pintarRanking(alumnosCircuito, true, hijoId);
