@@ -118,7 +118,7 @@ async function cargarAlumnos() {
   });
 
   /* =========================
-     BOTÓN SUMAR MINUTOS
+     BOTÓN SUMAR / RESTAR MINUTOS
   ========================= */
 
   document.querySelectorAll(".sumarMinutosBtn").forEach(btn => {
@@ -133,8 +133,9 @@ async function cargarAlumnos() {
 
       const numero = Number(minutos);
 
-      if (isNaN(numero) || numero <= 0) {
-        alert("Introduce un número válido");
+      // ✅ CORRECCIÓN AQUÍ
+      if (isNaN(numero) || numero === 0) {
+        alert("Introduce un número válido distinto de 0");
         return;
       }
 
