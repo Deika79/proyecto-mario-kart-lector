@@ -1,5 +1,4 @@
 import { obtenerAlumnos, registrarMinutos } from './api.js';
-import { pintarCoches } from './circuito.js';
 import { pintarRanking } from './ranking.js';
 
 const API_URL =
@@ -26,9 +25,8 @@ logoutBtn.addEventListener("click", () => {
   window.location.href = "index.html";
 });
 
-
 /**
- * Obtener alumnos para el circuito (todos)
+ * Obtener alumnos para ranking (todos)
  */
 async function obtenerAlumnosCircuito() {
 
@@ -39,56 +37,56 @@ async function obtenerAlumnosCircuito() {
   });
 
   if (!res.ok) {
-    console.error("Error obteniendo alumnos del circuito");
+    console.error("Error obteniendo alumnos del ranking");
     return [];
   }
 
   return await res.json();
 }
 
-
 /**
- * Cargar alumnos
+ * Cargar alumnos y ranking
  */
 async function cargarAlumnos() {
 
-  const alumnosPadre = await obtenerAlumnos();
+  try {
 
-  if (!alumnosPadre || alumnosPadre.length === 0) {
-    console.warn("El padre no tiene alumnos asociados");
-    return;
+    const alumnosPadre = await obtenerAlumnos();
+
+    if (!alumnosPadre || alumnosPadre.length === 0) {
+      console.warn("El padre no tiene alumnos asociados");
+      alumnoSelect.innerHTML = '<option>No hay alumnos</option>';
+      return;
+    }
+
+    // Rellenar select
+    alumnoSelect.innerHTML = '';
+
+    alumnosPadre.forEach(alumno => {
+      const option = document.createElement('option');
+      option.value = alumno._id;
+      option.textContent = alumno.nombre;
+      alumnoSelect.appendChild(option);
+    });
+
+    // Primer hijo seleccionado
+    const hijoId = alumnosPadre[0]._id;
+
+    // Obtener alumnos para ranking
+    const alumnosRanking = await obtenerAlumnosCircuito();
+
+    if (!alumnosRanking || alumnosRanking.length === 0) {
+      console.warn("No hay alumnos para pintar ranking");
+      return;
+    }
+
+    // Pintar ranking
+    pintarRanking(alumnosRanking, true, hijoId);
+
+  } catch (error) {
+    console.error("Error cargando alumnos:", error);
   }
-
-  alumnoSelect.innerHTML = '';
-
-  alumnosPadre.forEach(alumno => {
-
-    const option = document.createElement('option');
-    option.value = alumno._id;
-    option.textContent = alumno.nombre;
-
-    alumnoSelect.appendChild(option);
-
-  });
-
-  // Primer hijo seleccionado
-  const hijoId = alumnosPadre[0]._id;
-
-  // Obtener todos los alumnos para circuito y ranking
-  const alumnosCircuito = await obtenerAlumnosCircuito();
-
-  if (!alumnosCircuito || alumnosCircuito.length === 0) {
-    console.warn("No hay alumnos para pintar circuito");
-    return;
-  }
-
-
-
-  // Pintar ranking
-  pintarRanking(alumnosCircuito, true, hijoId);
-
 }
-
 
 /**
  * Registrar minutos
@@ -112,6 +110,7 @@ form.addEventListener("submit", async (e) => {
     mensaje.textContent = "Minutos registrados correctamente.";
     minutosInput.value = "";
 
+    // Recargar datos (ranking actualizado)
     cargarAlumnos();
 
   } catch (error) {
@@ -122,11 +121,7 @@ form.addEventListener("submit", async (e) => {
 
 });
 
-
-const circuitoImg = document.getElementById("circuito");
-
-if (circuitoImg.complete) {
-  cargarAlumnos();
-} else {
-  circuitoImg.onload = cargarAlumnos;
-}
+/**
+ * INICIO (sin circuito)
+ */
+cargarAlumnos();
