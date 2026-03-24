@@ -127,7 +127,7 @@ async function cargarAlumnos() {
 
       const alumnoId = btn.dataset.id;
 
-      const minutos = prompt("¿Cuántos minutos quieres añadir?");
+      const minutos = prompt("Introduce minutos (puedes usar negativos para restar)");
 
       if (!minutos) return;
 

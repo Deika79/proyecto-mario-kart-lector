@@ -86,6 +86,12 @@ router.post('/', verificarToken, async (req, res) => {
     });
 
     alumno.minutosTotales += minutos;
+
+    // evitar negativos
+    if (alumno.minutosTotales < 0) {
+      alumno.minutosTotales = 0;
+    }
+
     await alumno.save();
 
     res.json({ ok: true, alumno });
@@ -103,7 +109,7 @@ router.post('/', verificarToken, async (req, res) => {
  * ⭐ NUEVO ENDPOINT
  * POST /api/registros/manual
  * Uso exclusivo del profesor
- * SIN límite diario
+ * PERMITE SUMAR Y RESTAR
  */
 router.post('/manual', verificarToken, async (req, res) => {
 
@@ -118,7 +124,7 @@ router.post('/manual', verificarToken, async (req, res) => {
     const { alumnoId } = req.body;
     const minutos = Number(req.body.minutos);
 
-    if (!alumnoId || isNaN(minutos) || minutos <= 0) {
+    if (!alumnoId || isNaN(minutos) || minutos === 0) {
       return res.status(400).json({ error: "Datos inválidos" });
     }
 
@@ -135,6 +141,12 @@ router.post('/manual', verificarToken, async (req, res) => {
     });
 
     alumno.minutosTotales += minutos;
+
+    // evitar negativos
+    if (alumno.minutosTotales < 0) {
+      alumno.minutosTotales = 0;
+    }
+
     await alumno.save();
 
     res.json({ ok: true, alumno });
