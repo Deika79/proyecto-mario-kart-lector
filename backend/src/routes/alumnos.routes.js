@@ -94,6 +94,68 @@ router.get('/', verificarToken, async (req, res) => {
 
 
 /**
+ * ELIMINAR alumno (solo profesor)
+ */
+router.delete('/:id', verificarToken, async (req, res) => {
+
+  try {
+
+    if (req.usuario.rol !== "profesor") {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+
+    const alumnoId = req.params.id;
+
+    // 1. Buscar alumno
+    const alumno = await Alumno.findById(alumnoId);
+
+    if (!alumno) {
+      return res.status(404).json({ error: "Alumno no encontrado" });
+    }
+
+    // Import dinámico
+    const RegistroMinutos = (await import('../models/RegistroMinutos.js')).default;
+
+    // 2. Borrar registros de minutos
+    await RegistroMinutos.deleteMany({ alumnoId });
+
+    // 3. Buscar usuarios (padres) que tengan este alumno
+    const usuarios = await Usuario.find({
+      alumnosIds: alumnoId
+    });
+
+    for (const usuario of usuarios) {
+
+      // Quitar el alumno del array
+      usuario.alumnosIds = usuario.alumnosIds.filter(
+        id => id.toString() !== alumnoId
+      );
+
+      // Si no tiene más hijos → borrar usuario padre
+      if (usuario.alumnosIds.length === 0 && usuario.rol === "padre") {
+        await Usuario.findByIdAndDelete(usuario._id);
+      } else {
+        await usuario.save();
+      }
+
+    }
+
+    // 4. Borrar alumno
+    await Alumno.findByIdAndDelete(alumnoId);
+
+    res.json({ mensaje: "Alumno eliminado correctamente" });
+
+  } catch (error) {
+
+    console.error(error);
+    res.status(500).json({ error: "Error eliminando alumno" });
+
+  }
+
+});
+
+
+/**
  * RESET COMPLETO DE CLASE
  */
 router.delete("/reset", verificarToken, async (req, res) => {
@@ -108,6 +170,7 @@ router.delete("/reset", verificarToken, async (req, res) => {
 
     await Alumno.deleteMany({});
     await RegistroMinutos.deleteMany({});
+    await Usuario.deleteMany({ rol: "padre" });
 
     res.json({ mensaje: "Clase reiniciada correctamente" });
 

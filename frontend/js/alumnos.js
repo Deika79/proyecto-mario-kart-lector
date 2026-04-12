@@ -52,6 +52,45 @@ document.getElementById("volverBtn").onclick = () => {
 };
 
 /* =========================
+   ELIMINAR ALUMNO
+========================= */
+
+async function eliminarAlumno(alumnoId) {
+
+  const confirmar = confirm(
+    "⚠ Esto eliminará el alumno, sus minutos y el acceso del padre (si no tiene más hijos).\n\n¿Continuar?"
+  );
+
+  if (!confirmar) return;
+
+  try {
+
+    const res = await fetch(`${API_URL}/alumnos/${alumnoId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error eliminando alumno");
+    }
+
+    alert("Alumno eliminado correctamente");
+
+    cargarAlumnos();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+}
+
+/* =========================
    AÑADIR MINUTOS MANUAL (PROFESOR)
 ========================= */
 
@@ -104,6 +143,7 @@ async function cargarAlumnos() {
     li.innerHTML = `
       <strong>${alumno.nombre}</strong> — ${alumno.minutosTotales} min 
       <button class="sumarMinutosBtn" data-id="${alumno._id}">➕</button>
+      <button class="eliminarAlumnoBtn" data-id="${alumno._id}">🗑</button>
       <br>
       <small>${estadoPadre}</small>
       <br>
@@ -133,7 +173,6 @@ async function cargarAlumnos() {
 
       const numero = Number(minutos);
 
-      // ✅ CORRECCIÓN AQUÍ
       if (isNaN(numero) || numero === 0) {
         alert("Introduce un número válido distinto de 0");
         return;
@@ -151,6 +190,18 @@ async function cargarAlumnos() {
 
       }
 
+    });
+
+  });
+
+  /* =========================
+     BOTÓN ELIMINAR
+  ========================= */
+
+  document.querySelectorAll(".eliminarAlumnoBtn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+      eliminarAlumno(btn.dataset.id);
     });
 
   });
