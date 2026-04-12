@@ -1,4 +1,4 @@
-export function pintarRanking(alumnos, modoPadre = false, hijoId = null) {
+export function pintarRanking(alumnos, modoPadre = false, hijosIds = []) {
 
   const lista = document.getElementById("rankingLista");
 
@@ -23,7 +23,7 @@ export function pintarRanking(alumnos, modoPadre = false, hijoId = null) {
     // ⭐ ocultar nombres si es modo padre
     let nombreMostrar = alumno.nombre;
 
-    if (modoPadre && alumno._id !== hijoId) {
+    if (modoPadre && !hijosIds.includes(alumno._id)) {
       nombreMostrar = "Alumno";
     }
 

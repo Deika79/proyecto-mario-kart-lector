@@ -69,8 +69,8 @@ async function cargarAlumnos() {
       alumnoSelect.appendChild(option);
     });
 
-    // Primer hijo seleccionado
-    const hijoId = alumnosPadre[0]._id;
+    // 👉 IMPORTANTE: obtener TODOS los hijos del padre
+    const hijosIds = alumnosPadre.map(a => a._id);
 
     // Obtener alumnos para ranking
     const alumnosRanking = await obtenerAlumnosCircuito();
@@ -80,8 +80,8 @@ async function cargarAlumnos() {
       return;
     }
 
-    // Pintar ranking
-    pintarRanking(alumnosRanking, true, hijoId);
+    // Pintar ranking con múltiples hijos
+    pintarRanking(alumnosRanking, true, hijosIds);
 
   } catch (error) {
     console.error("Error cargando alumnos:", error);
@@ -122,6 +122,6 @@ form.addEventListener("submit", async (e) => {
 });
 
 /**
- * INICIO (sin circuito)
+ * INICIO
  */
 cargarAlumnos();
