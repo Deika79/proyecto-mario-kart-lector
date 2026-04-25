@@ -45,7 +45,52 @@ async function obtenerAlumnosCircuito() {
 }
 
 /**
- * Cargar alumnos y ranking
+ * 🆕 Cargar historial últimos 7 días
+ */
+async function cargarHistorial() {
+
+  const lista = document.getElementById("listaRegistros");
+  if (!lista) return;
+
+  lista.innerHTML = "";
+
+  try {
+
+    const res = await fetch(`${API_URL}/registros/mios`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const registros = await res.json();
+
+    if (!registros.length) {
+      lista.innerHTML = "<li>No hay registros recientes</li>";
+      return;
+    }
+
+    registros.forEach(r => {
+
+      const fecha = new Date(r.fecha).toLocaleDateString();
+
+      const li = document.createElement("li");
+
+      li.textContent = `${fecha} — ${r.alumnoId.nombre}: ${r.minutos} min`;
+
+      lista.appendChild(li);
+
+    });
+
+  } catch (error) {
+
+    console.error("Error cargando historial:", error);
+
+  }
+
+}
+
+/**
+ * Cargar alumnos + ranking + historial
  */
 async function cargarAlumnos() {
 
@@ -69,10 +114,10 @@ async function cargarAlumnos() {
       alumnoSelect.appendChild(option);
     });
 
-    // 👉 IMPORTANTE: obtener TODOS los hijos del padre
+    // IDs de todos sus hijos
     const hijosIds = alumnosPadre.map(a => a._id);
 
-    // Obtener alumnos para ranking
+    // Obtener ranking global
     const alumnosRanking = await obtenerAlumnosCircuito();
 
     if (!alumnosRanking || alumnosRanking.length === 0) {
@@ -80,11 +125,16 @@ async function cargarAlumnos() {
       return;
     }
 
-    // Pintar ranking con múltiples hijos
+    // Pintar ranking
     pintarRanking(alumnosRanking, true, hijosIds);
 
+    // 🆕 Cargar historial
+    cargarHistorial();
+
   } catch (error) {
+
     console.error("Error cargando alumnos:", error);
+
   }
 }
 
@@ -110,7 +160,7 @@ form.addEventListener("submit", async (e) => {
     mensaje.textContent = "Minutos registrados correctamente.";
     minutosInput.value = "";
 
-    // Recargar datos (ranking actualizado)
+    // Recargar todo
     cargarAlumnos();
 
   } catch (error) {

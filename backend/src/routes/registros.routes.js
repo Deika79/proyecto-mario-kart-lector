@@ -34,7 +34,7 @@ router.post('/', verificarToken, async (req, res) => {
       return res.status(404).json({ error: 'Alumno no encontrado' });
     }
 
-    // 🔐 CONTROL POR ROL (padres con varios hijos)
+    // 🔐 CONTROL PADRE
     if (req.usuario.rol === "padre") {
 
       const usuario = await Usuario.findById(req.usuario.id);
@@ -55,7 +55,7 @@ router.post('/', verificarToken, async (req, res) => {
 
     }
 
-    // 🗓 CALCULAR INICIO Y FIN DEL DÍA
+    // 🗓 CONTROL DIARIO
     const inicioDia = new Date();
     inicioDia.setHours(0, 0, 0, 0);
 
@@ -78,7 +78,6 @@ router.post('/', verificarToken, async (req, res) => {
       });
     }
 
-    // Crear registro
     await RegistroMinutos.create({
       alumnoId,
       minutos,
@@ -87,7 +86,6 @@ router.post('/', verificarToken, async (req, res) => {
 
     alumno.minutosTotales += minutos;
 
-    // evitar negativos
     if (alumno.minutosTotales < 0) {
       alumno.minutosTotales = 0;
     }
@@ -107,9 +105,49 @@ router.post('/', verificarToken, async (req, res) => {
 
 /**
  * ⭐ NUEVO ENDPOINT
+ * GET /api/registros/mios
+ * Últimos 7 días (padres)
+ */
+router.get('/mios', verificarToken, async (req, res) => {
+
+  try {
+
+    if (req.usuario.rol !== "padre") {
+      return res.status(403).json({ error: "No autorizado" });
+    }
+
+    const usuario = await Usuario.findById(req.usuario.id);
+
+    if (!usuario || !usuario.alumnosIds.length) {
+      return res.json([]);
+    }
+
+    // últimos 7 días
+    const hace7dias = new Date();
+    hace7dias.setDate(hace7dias.getDate() - 7);
+
+    const registros = await RegistroMinutos.find({
+      alumnoId: { $in: usuario.alumnosIds },
+      fecha: { $gte: hace7dias }
+    })
+      .sort({ fecha: -1 })
+      .populate("alumnoId", "nombre");
+
+    res.json(registros);
+
+  } catch (error) {
+
+    console.error("Error obteniendo historial:", error);
+    res.status(500).json({ error: error.message });
+
+  }
+
+});
+
+
+/**
  * POST /api/registros/manual
- * Uso exclusivo del profesor
- * PERMITE SUMAR Y RESTAR
+ * Uso profesor
  */
 router.post('/manual', verificarToken, async (req, res) => {
 
@@ -142,7 +180,6 @@ router.post('/manual', verificarToken, async (req, res) => {
 
     alumno.minutosTotales += minutos;
 
-    // evitar negativos
     if (alumno.minutosTotales < 0) {
       alumno.minutosTotales = 0;
     }
@@ -159,6 +196,5 @@ router.post('/manual', verificarToken, async (req, res) => {
   }
 
 });
-
 
 export default router;
