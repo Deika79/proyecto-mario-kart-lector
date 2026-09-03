@@ -1,4 +1,12 @@
-import { obtenerAlumnos, crearAlumno, resetClase, crearPadre, obtenerUsuarios } from './api.js'
+import {
+  obtenerAlumnos,
+  crearAlumno,
+  resetClase,
+  crearPadre,
+  obtenerUsuarios,
+  archivarYReiniciarCurso,
+  obtenerCursosArchivados
+} from './api.js'
 
 /* =========================
    GENERAR PASSWORD
@@ -42,6 +50,9 @@ const padreForm = document.getElementById("crearPadreForm");
 
 const passwordInput = document.getElementById("padrePassword");
 const passwordTexto = document.getElementById("passwordGenerada");
+const nombreCursoArchivoInput = document.getElementById("nombreCursoArchivo");
+const mensajeArchivo = document.getElementById("mensajeArchivo");
+const listaArchivos = document.getElementById("listaArchivos");
 
 /* =========================
    BOTÓN VOLVER
@@ -139,18 +150,21 @@ async function cargarAlumnos() {
       : "Padre pendiente ❌";
 
     const li = document.createElement("li");
+    li.classList.add("admin-list-item");
 
     li.innerHTML = `
-      <strong>${alumno.nombre}</strong> — ${alumno.minutosTotales} min 
-      <button class="sumarMinutosBtn" data-id="${alumno._id}">➕</button>
-      <button class="eliminarAlumnoBtn" data-id="${alumno._id}">🗑</button>
-      <br>
-      <small>${estadoPadre}</small>
-      <br>
-      <button class="crearPadreBtn" data-id="${alumno._id}">
-        Crear usuario padre
-      </button>
-      <br><br>
+      <div class="driver-info">
+        <strong>${alumno.nombre}</strong>
+        <span>${alumno.minutosTotales} min</span>
+        <small>${estadoPadre}</small>
+      </div>
+      <div class="driver-actions">
+        <button class="sumarMinutosBtn icon-button" data-id="${alumno._id}" title="Sumar o restar minutos">+</button>
+        <button class="crearPadreBtn btn-secondary" data-id="${alumno._id}">
+          Crear padre
+        </button>
+        <button class="eliminarAlumnoBtn icon-button danger-icon" data-id="${alumno._id}" title="Eliminar alumno">x</button>
+      </div>
     `;
 
     lista.appendChild(li);
@@ -227,6 +241,54 @@ async function cargarAlumnos() {
     });
 
   });
+
+}
+
+/* =========================
+   CARGAR CURSOS ARCHIVADOS
+========================= */
+
+async function cargarCursosArchivados() {
+
+  try {
+
+    const archivos = await obtenerCursosArchivados();
+
+    listaArchivos.innerHTML = "";
+
+    if (archivos.length === 0) {
+      listaArchivos.innerHTML = "<li>No hay cursos archivados todavía.</li>";
+      return;
+    }
+
+    archivos.forEach(archivo => {
+
+      const totalMinutos = archivo.alumnos.reduce(
+        (total, alumno) => total + (alumno.minutosTotales || 0),
+        0
+      );
+
+      const fecha = new Date(archivo.createdAt).toLocaleDateString("es-ES");
+      const li = document.createElement("li");
+      li.classList.add("archive-list-item");
+
+      li.innerHTML = `
+        <div>
+          <strong>${archivo.nombre}</strong>
+          <small>Archivado el ${fecha}</small>
+        </div>
+        <span>${archivo.alumnos.length} alumnos · ${totalMinutos} min</span>
+      `;
+
+      listaArchivos.appendChild(li);
+
+    });
+
+  } catch (error) {
+
+    listaArchivos.innerHTML = `<li>${error.message}</li>`;
+
+  }
 
 }
 
@@ -346,7 +408,7 @@ document.getElementById("cancelarPadre").onclick = () => {
 document.getElementById("resetClaseBtn").addEventListener("click", async () => {
 
   const confirmar = confirm(
-    "Esto borrará TODOS los alumnos y registros.\n\n¿Seguro?"
+    "Esto borrará TODOS los alumnos, padres y registros.\n\nPara cambiar de curso usa el botón de archivar y poner puntos a cero.\n\n¿Seguro?"
   );
 
   if (!confirmar) return;
@@ -368,7 +430,44 @@ document.getElementById("resetClaseBtn").addEventListener("click", async () => {
 });
 
 /* =========================
+   ARCHIVAR Y REINICIAR CURSO
+========================= */
+
+document.getElementById("archivarReiniciarBtn").addEventListener("click", async () => {
+
+  const nombre = nombreCursoArchivoInput.value.trim();
+
+  if (!nombre) {
+    alert("Indica un nombre para el curso archivado");
+    return;
+  }
+
+  const confirmar = confirm(
+    `Se guardará una copia de "${nombre}" y después todos los alumnos empezarán con 0 minutos.\n\nSe mantienen alumnos, padres, emails y contraseñas.\n\n¿Continuar?`
+  );
+
+  if (!confirmar) return;
+
+  try {
+
+    const resultado = await archivarYReiniciarCurso(nombre);
+
+    mensajeArchivo.textContent = resultado.mensaje;
+
+    await cargarAlumnos();
+    await cargarCursosArchivados();
+
+  } catch (error) {
+
+    mensajeArchivo.textContent = error.message;
+
+  }
+
+});
+
+/* =========================
    INICIAR
 ========================= */
 
 cargarAlumnos();
+cargarCursosArchivados();

@@ -6,28 +6,39 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body>
+<body class="screen-admin">
 
-<header class="banner">
+<header class="banner game-banner">
 <img src="assets/profesor/banner.png" alt="Mario Kart Lector">
 </header>
 
 <main class="main-container">
 
-<section class="panel">
+<section class="panel admin-panel">
+
+<div class="panel-header game-panel-header">
+<img src="assets/profesor/profe.png" alt="Profesor">
+<div>
+<p class="screen-kicker">Boxes del profesor</p>
+<h1>Gestión de parrilla</h1>
+</div>
+</div>
 
 <!-- ===== ALUMNOS ACTUALES ===== -->
 
-<h3>Alumnos actuales</h3>
+<div class="section-title">
+<span class="title-badge">01</span>
+<h2>Alumnos actuales</h2>
+</div>
 <ul id="listaAlumnos"></ul>
 
-<hr style="margin:30px 0">
+<hr>
 
 <!-- ===== NUEVO ALUMNO ===== -->
 
-<div class="panel-header">
-<img src="assets/profesor/profe.png">
-<h2>Nuevo alumno</h2>
+<div class="section-title">
+<span class="title-badge">02</span>
+<h2>Nuevo piloto lector</h2>
 </div>
 
 <form id="crearAlumnoForm">
@@ -50,25 +61,50 @@
 
 </select>
 
-<button type="submit">Crear alumno</button>
+<button type="submit" class="btn-primary">Crear alumno</button>
 
 </form>
 
-<p id="mensajeCrear"></p>
+<p id="mensajeCrear" class="form-message"></p>
 
-<hr style="margin:30px 0">
+<hr>
 
 <!-- ===== REINICIAR CURSO ===== -->
 
-<h3>⚠️ Reiniciar curso</h3>
+<div class="section-title">
+<span class="title-badge">03</span>
+<h2>Cambio de curso</h2>
+</div>
 
-<button id="resetClaseBtn">
-Reiniciar clase (borrar todos los datos)
+<label>Nombre del archivo</label>
+<input type="text" id="nombreCursoArchivo" value="5ºD Primaria">
+
+<button id="archivarReiniciarBtn" class="btn-primary">
+Archivar curso y poner puntos a cero
+</button>
+
+<p id="mensajeArchivo" class="form-message"></p>
+
+<div class="section-title compact-title">
+<span class="title-badge">BOX</span>
+<h2>Cursos archivados</h2>
+</div>
+<ul id="listaArchivos"></ul>
+
+<hr>
+
+<div class="section-title danger-title">
+<span class="title-badge">!</span>
+<h2>Zona peligrosa</h2>
+</div>
+
+<button id="resetClaseBtn" class="boton-peligro">
+Reiniciar clase borrando alumnos y padres
 </button>
 
 <br><br>
 
-<button id="volverBtn">Volver</button>
+<button id="volverBtn" class="btn-secondary">Volver al circuito</button>
 
 </section>
 
@@ -76,11 +112,11 @@ Reiniciar clase (borrar todos los datos)
 
 <!-- MODAL CREAR PADRE -->
 
-<div id="modalPadre" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+<div id="modalPadre" class="modal-backdrop" style="display:none;">
 
-<div style="background:white; padding:30px; width:420px; margin:120px auto; border-radius:10px;">
+<div class="modal-card">
 
-<h3>Crear usuario padre</h3>
+<h3>Crear acceso familiar</h3>
 
 <form id="crearPadreForm">
 
@@ -97,25 +133,25 @@ Reiniciar clase (borrar todos los datos)
 
 <br>
 
-<button type="button" id="generarPasswordBtn">
+<button type="button" id="generarPasswordBtn" class="btn-secondary">
 Generar nueva contraseña
 </button>
 
-<p id="passwordGenerada"></p>
+<p id="passwordGenerada" class="form-message"></p>
 
-<button type="button" id="copiarPasswordBtn">
+<button type="button" id="copiarPasswordBtn" class="btn-secondary">
 Copiar contraseña
 </button>
 
 <br><br>
 
-<button type="submit">Crear usuario</button>
+<button type="submit" class="btn-primary">Crear usuario</button>
 
-<button type="button" id="cancelarPadre">Cancelar</button>
+<button type="button" id="cancelarPadre" class="btn-secondary">Cancelar</button>
 
 </form>
 
-<p id="mensajePadre"></p>
+<p id="mensajePadre" class="form-message"></p>
 
 </div>
 

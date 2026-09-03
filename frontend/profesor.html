@@ -6,10 +6,10 @@
   <title>Profesor - Mario Kart Lector</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="screen-profesor">
 
   <!-- Banner superior -->
-  <header class="banner">
+  <header class="banner game-banner">
     <img src="assets/profesor/banner.png" alt="Mario Kart Lector">
   </header>
 
@@ -19,8 +19,23 @@
     <!-- Panel del circuito -->
     <section class="panel panel-circuito">
 
-      <div class="panel-header">
+      <div class="panel-header game-panel-header">
         <img src="assets/profesor/profe.png" alt="Profesor">
+        <div>
+          <p class="screen-kicker">Panel profesor</p>
+          <h1>Gran Premio de Lectura</h1>
+        </div>
+      </div>
+
+      <div class="hud-grid">
+        <div class="hud-item">
+          <span class="hud-label">Curso activo</span>
+          <strong>5ºD Primaria</strong>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Objetivo</span>
+          <strong>Leer, avanzar y celebrar</strong>
+        </div>
       </div>
 
       <!-- Circuito -->
@@ -32,7 +47,10 @@
       <!-- Ranking -->
       <div class="panel panel-ranking">
 
-        <h2>🏆 Ranking de lectura</h2>
+        <div class="section-title">
+          <span class="title-badge">P1</span>
+          <h2>Ranking de lectura</h2>
+        </div>
 
         <ol id="rankingLista" class="ranking-lista"></ol>
 
@@ -44,11 +62,11 @@
       <!-- Botones profesor -->
       <div class="botones-profesor">
 
-        <a href="alumnos.html">
-          <button type="button">Gestionar alumnos</button>
+        <a href="alumnos.html" class="button-link">
+          <button type="button" class="btn-primary">Gestionar parrilla</button>
         </a>
 
-        <button type="button" id="logoutBtn">
+        <button type="button" id="logoutBtn" class="btn-secondary">
           Cerrar sesión
         </button>
 

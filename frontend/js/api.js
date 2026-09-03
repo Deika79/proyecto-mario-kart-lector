@@ -122,6 +122,47 @@ export async function resetClase() {
   return data;
 
 }
+export async function archivarYReiniciarCurso(nombre) {
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/alumnos/archivar-reiniciar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ nombre })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error archivando y reiniciando el curso");
+  }
+
+  return data;
+
+}
+export async function obtenerCursosArchivados() {
+
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_URL}/alumnos/archivos`, {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Error obteniendo cursos archivados");
+  }
+
+  return data;
+
+}
 /* =========================
    CREAR USUARIO PADRE
 ========================= */

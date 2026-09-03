@@ -7,40 +7,61 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body>
+<body class="screen-familia">
 
-  <h1>Familia - Añadir Minutos</h1>
+  <header class="banner game-banner">
+    <img src="assets/profesor/banner.png" alt="Mario Kart Lector">
+  </header>
+
+  <main class="main-container">
+
+  <section class="panel familia-panel">
+    <div class="section-title">
+      <span class="title-badge">GO</span>
+      <h1>Registrar lectura</h1>
+    </div>
 
   <div class="form-container">
     <form id="registroForm">
 
-      <label for="alumnoId">Alumno:</label>
+      <label for="alumnoId">Piloto lector</label>
       <select id="alumnoId" required></select>
 
-      <label for="minutos">Minutos leídos hoy:</label>
+      <label for="minutos">Minutos leídos hoy</label>
       <input type="number" id="minutos" min="1" required>
 
-      <button type="submit">Registrar Minutos</button>
-      <button type="button" id="logoutBtn">Cerrar sesión</button>
+      <div class="button-row">
+        <button type="submit" class="btn-primary">Registrar minutos</button>
+        <button type="button" id="logoutBtn" class="btn-secondary">Cerrar sesión</button>
+      </div>
 
     </form>
   </div>
 
-  <div id="mensaje"></div>
+  <div id="mensaje" class="form-message"></div>
+  </section>
 
   <!-- RANKING -->
 
-  <div class="panel panel-ranking" style="margin-top:40px; max-width:600px;">
-    <h2>🏆 Ranking de lectura</h2>
+  <div class="panel panel-ranking">
+    <div class="section-title">
+      <span class="title-badge">P1</span>
+      <h2>Ranking de lectura</h2>
+    </div>
     <ol id="rankingLista" class="ranking-lista"></ol>
   </div>
 
   <!-- 🆕 HISTORIAL -->
 
-  <div class="panel" style="margin-top:40px; max-width:600px;">
-    <h2>📅 Últimos registros</h2>
+  <div class="panel panel-history">
+    <div class="section-title">
+      <span class="title-badge">LOG</span>
+      <h2>Últimos registros</h2>
+    </div>
     <ul id="listaRegistros"></ul>
   </div>
+
+  </main>
 
   <script type="module" src="js/padre.js"></script>
 

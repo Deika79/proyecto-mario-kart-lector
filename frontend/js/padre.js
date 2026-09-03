@@ -74,8 +74,13 @@ async function cargarHistorial() {
       const fecha = new Date(r.fecha).toLocaleDateString();
 
       const li = document.createElement("li");
+      li.classList.add("history-list-item");
 
-      li.textContent = `${fecha} — ${r.alumnoId.nombre}: ${r.minutos} min`;
+      li.innerHTML = `
+        <span>${fecha}</span>
+        <strong>${r.alumnoId.nombre}</strong>
+        <em>${r.minutos} min</em>
+      `;
 
       lista.appendChild(li);
 
