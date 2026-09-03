@@ -2,12 +2,28 @@
 import { circuito1 } from "./data/circuito1.js";
 
 const MINUTOS_VUELTA = 1920;
-const TAMANO_COCHE = 40;
-const OFFSET_STACK = 12;
+const TAMANO_COCHE_MAX = 40;
+const TAMANO_COCHE_MIN = 18;
 
 let ultimoEstado = null;
 
-export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
+function normalizarHijos(hijos) {
+  if (!hijos) return [];
+  return Array.isArray(hijos) ? hijos : [hijos];
+}
+
+function calcularTamanoCoche(anchoCircuito) {
+  return Math.max(
+    TAMANO_COCHE_MIN,
+    Math.min(TAMANO_COCHE_MAX, Math.round(anchoCircuito / 18))
+  );
+}
+
+function limitar(valor, minimo, maximo) {
+  return Math.max(minimo, Math.min(maximo, valor));
+}
+
+export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
 
   const contenedor = document.getElementById("coches-container");
   const circuitoImg = document.getElementById("circuito");
@@ -25,13 +41,18 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
   const alumnos = alumnosBackend || [];
   if (!alumnos.length) return;
 
-  ultimoEstado = { alumnosBackend, modoPadre, hijoId };
+  const hijosIds = normalizarHijos(hijos);
+  ultimoEstado = { alumnosBackend, modoPadre, hijos: hijosIds };
 
   const totalCasillas = circuito1.length;
   const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
 
-  const ancho = circuitoImg.offsetWidth;
-  const alto = circuitoImg.offsetHeight;
+  const anchoOriginal = circuitoImg.naturalWidth || 900;
+  const altoOriginal = circuitoImg.naturalHeight || 900;
+  const anchoVisible = circuitoImg.offsetWidth;
+  const escala = anchoVisible / anchoOriginal;
+  const tamanoCoche = calcularTamanoCoche(anchoVisible);
+  const offsetStack = Math.max(5, Math.round(tamanoCoche * 0.3 / escala));
 
   const agrupados = {};
 
@@ -82,11 +103,20 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
 
       }
 
-      // evitar solapamientos
-      offsetY += index * OFFSET_STACK;
+      // evitar solapamientos con separación proporcional al tamaño visible
+      offsetY += index * offsetStack;
 
-      const x = punto.x + offsetX;
-      const y = punto.y + offsetY;
+      const margenOriginal = (tamanoCoche / 2 + 2) / escala;
+      const x = limitar(
+        punto.x + offsetX,
+        margenOriginal,
+        anchoOriginal - margenOriginal
+      );
+      const y = limitar(
+        punto.y + offsetY,
+        margenOriginal,
+        altoOriginal - margenOriginal
+      );
 
       const puntoAnterior =
         circuito1[(alumno.casilla - 1 + totalCasillas) % totalCasillas];
@@ -100,37 +130,45 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijoId = null) {
       let angulo = Math.atan2(dy, dx) * (180 / Math.PI);
       angulo -= 90;
 
-      const left = (x / ancho) * 100;
-      const top = (y / alto) * 100;
+      const left = (x / anchoOriginal) * 100;
+      const top = (y / altoOriginal) * 100;
+      const esHijo = hijosIds.includes(alumno._id);
 
       const img = document.createElement("img");
       img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
       img.classList.add("coche");
 
-      if (modoPadre && alumno._id === hijoId) {
+      if (modoPadre && esHijo) {
         img.classList.add("coche-hijo");
       }
 
-      img.width = TAMANO_COCHE;
-      img.height = TAMANO_COCHE;
+      if (modoPadre && !esHijo) {
+        img.classList.add("coche-rival");
+      }
+
+      img.width = tamanoCoche;
+      img.height = tamanoCoche;
 
       img.style.position = "absolute";
       img.style.left = left + "%";
       img.style.top = top + "%";
-      img.style.transform = `rotate(${angulo}deg)`;
+      img.style.transform = `translate(-50%, -50%) rotate(${angulo}deg)`;
 
       contenedor.appendChild(img);
 
       const label = document.createElement("div");
 
-      if (!modoPadre || alumno._id === hijoId) {
+      if (!modoPadre || esHijo) {
         label.textContent = alumno.nombre;
       }
 
       label.classList.add("nombre-coches");
+      if (modoPadre && esHijo) {
+        label.classList.add("nombre-hijo");
+      }
       label.style.position = "absolute";
       label.style.left = left + "%";
-      label.style.top = (top - 3) + "%";
+      label.style.top = `calc(${top}% - ${Math.max(14, tamanoCoche * 0.8)}px)`;
 
       contenedor.appendChild(label);
 
@@ -148,7 +186,7 @@ window.addEventListener("resize", () => {
   pintarCoches(
     ultimoEstado.alumnosBackend,
     ultimoEstado.modoPadre,
-    ultimoEstado.hijoId
+    ultimoEstado.hijos
   );
 
 });

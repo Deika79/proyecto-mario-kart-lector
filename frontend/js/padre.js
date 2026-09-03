@@ -1,5 +1,6 @@
 import { obtenerAlumnos, registrarMinutos } from './api.js';
 import { pintarRanking } from './ranking.js';
+import { pintarCoches } from './circuito.js';
 
 const API_URL =
   window.location.hostname === "localhost"
@@ -132,6 +133,9 @@ async function cargarAlumnos() {
 
     // Pintar ranking
     pintarRanking(alumnosRanking, true, hijosIds);
+
+    // Pintar circuito
+    pintarCoches(alumnosRanking, true, hijosIds);
 
     // 🆕 Cargar historial
     cargarHistorial();

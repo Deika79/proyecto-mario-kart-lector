@@ -483,14 +483,45 @@ button:active {
 .coche-hijo {
   filter: drop-shadow(0 0 6px var(--yellow))
           drop-shadow(0 0 12px var(--orange));
+  z-index: 4;
+}
+
+.coche-rival {
+  opacity: 0.82;
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.42));
+}
+
+.nombre-hijo {
+  background: var(--yellow);
+  border: 2px solid var(--line);
+  color: #151923;
+  text-shadow: none;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.28);
 }
 
 /* ===== RANKING ===== */
 
 .panel-ranking,
-.panel-history {
+.panel-history,
+.panel-circuito-familia {
   max-width: 650px;
   margin: 34px auto 0;
+}
+
+.panel-circuito-familia {
+  max-width: 760px;
+}
+
+.family-circuit-note {
+  display: inline-flex;
+  margin: -4px 0 16px;
+  padding: 8px 10px;
+  border: 3px solid var(--line);
+  border-radius: 6px;
+  background: #151923;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 900;
 }
 
 .ranking-lista,
@@ -714,6 +745,40 @@ button:active {
   .coche {
     width: 32px;
     height: 32px;
+  }
+
+  .panel-circuito-familia {
+    padding: 12px;
+  }
+
+  .panel-circuito-familia .section-title {
+    margin: 6px 6px 12px;
+  }
+
+  .family-circuit-note {
+    margin-left: 6px;
+    margin-right: 6px;
+    font-size: 0.82rem;
+  }
+
+  #circuito-container {
+    border-width: 3px;
+    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.24);
+  }
+
+  #circuito-container::after {
+    left: 7px;
+    top: 7px;
+    padding: 4px 7px;
+    font-size: 0.62rem;
+  }
+
+  .nombre-coches {
+    max-width: 72px;
+    padding: 1px 4px;
+    font-size: 10px;
+    line-height: 1.1;
+    text-align: center;
   }
 }
 
