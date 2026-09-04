@@ -475,7 +475,7 @@ button:active {
 .coche-hijo {
   filter: drop-shadow(0 0 8px var(--yellow))
           drop-shadow(0 8px 12px rgba(0, 0, 0, 0.34));
-  z-index: 4;
+  z-index: 8;
 }
 
 .coche-rival {
@@ -485,6 +485,8 @@ button:active {
 .nombre-hijo {
   background: var(--yellow);
   color: var(--ink);
+  z-index: 20;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
 }
 
 .panel-circuito-familia {
@@ -548,6 +550,23 @@ button:active {
 
 .ranking-lista li:nth-child(3) {
   background: linear-gradient(180deg, #fff8f0, #ffe2c5);
+}
+
+.ranking-lista li.ranking-hijo {
+  border-color: rgba(230, 0, 18, 0.35);
+  background: linear-gradient(180deg, #fff, #fff5f5);
+  box-shadow: 0 14px 34px rgba(230, 0, 18, 0.13);
+  position: relative;
+}
+
+.ranking-lista li.ranking-hijo::before {
+  content: "Tu hijo";
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--nintendo-red);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 850;
 }
 
 .ranking-izq {

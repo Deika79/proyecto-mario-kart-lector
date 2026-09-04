@@ -4,6 +4,8 @@ import { circuito1 } from "./data/circuito1.js";
 const MINUTOS_VUELTA = 1920;
 const TAMANO_COCHE_MAX = 40;
 const TAMANO_COCHE_MIN = 18;
+const TAMANO_COCHE_PADRE_MAX = 24;
+const TAMANO_COCHE_PADRE_MIN = 12;
 
 let ultimoEstado = null;
 
@@ -17,7 +19,14 @@ function normalizarHijos(hijos) {
   return Array.isArray(hijos) ? hijos : [hijos];
 }
 
-function calcularTamanoCoche(anchoCircuito) {
+function calcularTamanoCoche(anchoCircuito, modoPadre) {
+  if (modoPadre) {
+    return Math.max(
+      TAMANO_COCHE_PADRE_MIN,
+      Math.min(TAMANO_COCHE_PADRE_MAX, Math.round(anchoCircuito / 24))
+    );
+  }
+
   return Math.max(
     TAMANO_COCHE_MIN,
     Math.min(TAMANO_COCHE_MAX, Math.round(anchoCircuito / 18))
@@ -56,8 +65,9 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
   const altoOriginal = circuitoImg.naturalHeight || 900;
   const anchoVisible = circuitoImg.offsetWidth;
   const escala = anchoVisible / anchoOriginal;
-  const tamanoCoche = calcularTamanoCoche(anchoVisible);
+  const tamanoCoche = calcularTamanoCoche(anchoVisible, modoPadre);
   const offsetStack = Math.max(5, Math.round(tamanoCoche * 0.3 / escala));
+  const etiquetasHijos = [];
 
   const agrupados = {};
 
@@ -80,7 +90,16 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
 
   Object.values(agrupados).forEach(grupo => {
 
-    grupo.forEach((alumno, index) => {
+    const grupoOrdenado = [...grupo].sort((a, b) => {
+      const aEsHijo = hijosIds.includes(a._id);
+      const bEsHijo = hijosIds.includes(b._id);
+
+      if (aEsHijo === bEsHijo) return 0;
+
+      return aEsHijo ? 1 : -1;
+    });
+
+    grupoOrdenado.forEach((alumno, index) => {
 
       const punto = circuito1[alumno.casilla];
 
@@ -145,6 +164,7 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
 
       if (modoPadre && esHijo) {
         img.classList.add("coche-hijo");
+        img.style.zIndex = "8";
       }
 
       if (modoPadre && !esHijo) {
@@ -155,6 +175,8 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
       img.height = tamanoCoche;
 
       img.style.position = "absolute";
+      img.style.width = `${tamanoCoche}px`;
+      img.style.height = `${tamanoCoche}px`;
       img.style.left = left + "%";
       img.style.top = top + "%";
       img.style.transform = `translate(-50%, -50%) rotate(${angulo}deg)`;
@@ -171,16 +193,29 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
       label.classList.add("nombre-coches");
       if (modoPadre && esHijo) {
         label.classList.add("nombre-hijo");
+        label.style.zIndex = "20";
       }
       label.style.position = "absolute";
       label.style.left = left + "%";
       label.style.top = `calc(${top}% - ${Math.max(14, tamanoCoche * 0.8)}px)`;
 
-      contenedor.appendChild(label);
+      if (left < 12) {
+        label.style.transform = "translateX(0)";
+      } else if (left > 88) {
+        label.style.transform = "translateX(-100%)";
+      }
+
+      if (modoPadre && esHijo) {
+        etiquetasHijos.push(label);
+      } else {
+        contenedor.appendChild(label);
+      }
 
     });
 
   });
+
+  etiquetasHijos.forEach(label => contenedor.appendChild(label));
 
 }
 
