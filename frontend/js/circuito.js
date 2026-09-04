@@ -37,6 +37,60 @@ function limitar(valor, minimo, maximo) {
   return Math.max(minimo, Math.min(maximo, valor));
 }
 
+function calcularOffsetEtiqueta(index, escala) {
+  const columna = index % 3;
+  const fila = Math.floor(index / 3);
+  const offsetsX = [-42, 0, 42];
+
+  return {
+    x: offsetsX[columna] / escala,
+    y: -(26 + fila * 24) / escala,
+  };
+}
+
+function resolverSolapesEtiquetas(contenedor) {
+  const etiquetas = Array.from(contenedor.querySelectorAll(".nombre-coches"))
+    .filter(label => label.textContent.trim());
+
+  const ocupadas = [];
+  const maxIntentos = 12;
+
+  etiquetas.forEach((label, index) => {
+    const baseLeft = parseFloat(label.style.left);
+    const baseTop = parseFloat(label.style.top);
+
+    for (let intento = 0; intento < maxIntentos; intento++) {
+      const direccion = intento % 2 === 0 ? -1 : 1;
+      const fila = Math.ceil(intento / 2);
+
+      label.style.left = `${limitar(baseLeft + direccion * fila * 3.2, 1, 99)}%`;
+      label.style.top = `${limitar(baseTop + intento * 2.1, 1, 96)}%`;
+
+      if (baseLeft < 12) {
+        label.style.transform = "translateX(0)";
+      } else if (baseLeft > 88) {
+        label.style.transform = "translateX(-100%)";
+      } else {
+        label.style.transform = "translateX(-50%)";
+      }
+
+      const rect = label.getBoundingClientRect();
+      const choca = ocupadas.some(ocupada => !(
+        rect.right < ocupada.left ||
+        rect.left > ocupada.right ||
+        rect.bottom < ocupada.top ||
+        rect.top > ocupada.bottom
+      ));
+
+      if (!choca || intento === maxIntentos - 1) {
+        ocupadas.push(rect);
+        label.style.zIndex = String(10 + index);
+        break;
+      }
+    }
+  });
+}
+
 export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
 
   const contenedor = document.getElementById("coches-container");
@@ -157,6 +211,19 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
       const left = (x / anchoOriginal) * 100;
       const top = (y / altoOriginal) * 100;
       const esHijo = hijosIds.includes(alumno._id);
+      const offsetEtiqueta = calcularOffsetEtiqueta(index, escala);
+      const labelX = limitar(
+        x + offsetEtiqueta.x,
+        margenOriginal,
+        anchoOriginal - margenOriginal
+      );
+      const labelY = limitar(
+        y + offsetEtiqueta.y,
+        margenOriginal,
+        altoOriginal - margenOriginal
+      );
+      const labelLeft = (labelX / anchoOriginal) * 100;
+      const labelTop = (labelY / altoOriginal) * 100;
 
       const img = document.createElement("img");
       img.src = `assets/coches/${alumno.cocheSeleccionado}.png`;
@@ -187,7 +254,10 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
 
       if (!modoPadre || esHijo) {
         const copas = obtenerCopasVueltas(alumno.minutosTotales);
-        label.textContent = `${alumno.nombre}${copas ? ` ${copas}` : ""}`;
+        label.innerHTML = `
+          <span class="nombre-label-text">${alumno.nombre}</span>
+          ${copas ? `<span class="nombre-label-copas">${copas}</span>` : ""}
+        `;
       }
 
       label.classList.add("nombre-coches");
@@ -196,12 +266,12 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
         label.style.zIndex = "20";
       }
       label.style.position = "absolute";
-      label.style.left = left + "%";
-      label.style.top = `calc(${top}% - ${Math.max(14, tamanoCoche * 0.8)}px)`;
+      label.style.left = labelLeft + "%";
+      label.style.top = labelTop + "%";
 
-      if (left < 12) {
+      if (labelLeft < 12) {
         label.style.transform = "translateX(0)";
-      } else if (left > 88) {
+      } else if (labelLeft > 88) {
         label.style.transform = "translateX(-100%)";
       }
 
@@ -216,6 +286,7 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
   });
 
   etiquetasHijos.forEach(label => contenedor.appendChild(label));
+  resolverSolapesEtiquetas(contenedor);
 
 }
 
