@@ -1,6 +1,8 @@
 import { pintarCoches } from './circuito.js';
 import { obtenerAlumnos } from './api.js';
 
+const MINUTOS_VUELTA = 1920;
+
 const token = localStorage.getItem("token");
 const rol = localStorage.getItem("rol");
 
@@ -36,6 +38,9 @@ function pintarRanking(alumnos) {
     else if (index === 1) trofeo = "🥈";
     else if (index === 2) trofeo = "🥉";
 
+    const vueltas = Math.floor((alumno.minutosTotales || 0) / MINUTOS_VUELTA);
+    const copas = "🏆".repeat(vueltas);
+
     li.innerHTML = `
       <div class="ranking-izq">
         <span class="ranking-pos">${trofeo || index + 1}</span>
@@ -45,7 +50,10 @@ function pintarRanking(alumnos) {
           class="ranking-coche"
         >
 
-        <span class="ranking-nombre">${alumno.nombre}</span>
+        <span class="ranking-nombre">
+          ${alumno.nombre}
+          ${copas ? `<span class="lap-badges">${copas}</span>` : ""}
+        </span>
       </div>
 
       <span class="ranking-min">${alumno.minutosTotales} min</span>

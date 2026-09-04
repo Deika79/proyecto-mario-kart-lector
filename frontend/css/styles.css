@@ -581,6 +581,14 @@ button:active {
   font-weight: 800;
 }
 
+.lap-badges {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 .ranking-min {
   flex: 0 0 auto;
   color: var(--muted);

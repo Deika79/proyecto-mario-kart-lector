@@ -7,6 +7,11 @@ const TAMANO_COCHE_MIN = 18;
 
 let ultimoEstado = null;
 
+function obtenerCopasVueltas(minutosTotales) {
+  const vueltas = Math.floor((minutosTotales || 0) / MINUTOS_VUELTA);
+  return "🏆".repeat(vueltas);
+}
+
 function normalizarHijos(hijos) {
   if (!hijos) return [];
   return Array.isArray(hijos) ? hijos : [hijos];
@@ -32,7 +37,7 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
 
   // esperar a que cargue la imagen (clave para móvil)
   if (!circuitoImg.complete) {
-    circuitoImg.onload = () => pintarCoches(alumnosBackend, modoPadre, hijoId);
+    circuitoImg.onload = () => pintarCoches(alumnosBackend, modoPadre, hijos);
     return;
   }
 
@@ -159,7 +164,8 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
       const label = document.createElement("div");
 
       if (!modoPadre || esHijo) {
-        label.textContent = alumno.nombre;
+        const copas = obtenerCopasVueltas(alumno.minutosTotales);
+        label.textContent = `${alumno.nombre}${copas ? ` ${copas}` : ""}`;
       }
 
       label.classList.add("nombre-coches");
