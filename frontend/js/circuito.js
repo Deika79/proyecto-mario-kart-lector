@@ -6,6 +6,8 @@ const TAMANO_COCHE_MAX = 40;
 const TAMANO_COCHE_MIN = 18;
 const TAMANO_COCHE_PADRE_MAX = 24;
 const TAMANO_COCHE_PADRE_MIN = 12;
+const ANCHO_COORDENADAS = 900;
+const ALTO_COORDENADAS = 900;
 
 let ultimoEstado = null;
 
@@ -40,11 +42,11 @@ function limitar(valor, minimo, maximo) {
 function calcularOffsetEtiqueta(index, escala) {
   const columna = index % 3;
   const fila = Math.floor(index / 3);
-  const offsetsX = [-42, 0, 42];
+  const offsetsX = [-24, 0, 24];
 
   return {
     x: offsetsX[columna] / escala,
-    y: -(26 + fila * 24) / escala,
+    y: -(18 + fila * 18) / escala,
   };
 }
 
@@ -63,8 +65,8 @@ function resolverSolapesEtiquetas(contenedor) {
       const direccion = intento % 2 === 0 ? -1 : 1;
       const fila = Math.ceil(intento / 2);
 
-      label.style.left = `${limitar(baseLeft + direccion * fila * 3.2, 1, 99)}%`;
-      label.style.top = `${limitar(baseTop + intento * 2.1, 1, 96)}%`;
+      label.style.left = `${limitar(baseLeft + direccion * fila * 2.2, 1.5, 98.5)}%`;
+      label.style.top = `${limitar(baseTop + intento * 1.5, 2, 96)}%`;
 
       if (baseLeft < 12) {
         label.style.transform = "translateX(0)";
@@ -115,8 +117,8 @@ export function pintarCoches(alumnosBackend, modoPadre = false, hijos = null) {
   const totalCasillas = circuito1.length;
   const minutosPorCasilla = MINUTOS_VUELTA / totalCasillas;
 
-  const anchoOriginal = circuitoImg.naturalWidth || 900;
-  const altoOriginal = circuitoImg.naturalHeight || 900;
+  const anchoOriginal = ANCHO_COORDENADAS;
+  const altoOriginal = ALTO_COORDENADAS;
   const anchoVisible = circuitoImg.offsetWidth;
   const escala = anchoVisible / anchoOriginal;
   const tamanoCoche = calcularTamanoCoche(anchoVisible, modoPadre);
