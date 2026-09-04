@@ -420,19 +420,6 @@ button:active {
   box-shadow: 0 18px 36px rgba(22, 30, 46, 0.18);
 }
 
-#circuito-container::after {
-  content: "Circuito lector";
-  position: absolute;
-  left: 14px;
-  top: 14px;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--nintendo-red);
-  font-size: 0.78rem;
-  font-weight: 900;
-}
-
 #circuito {
   width: 100%;
   height: auto;
@@ -752,13 +739,6 @@ button:active {
 
   #circuito-container {
     border-radius: 18px;
-  }
-
-  #circuito-container::after {
-    left: 8px;
-    top: 8px;
-    padding: 5px 9px;
-    font-size: 0.66rem;
   }
 
   .nombre-coches {
